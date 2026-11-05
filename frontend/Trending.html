@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CNIMA · 25 Trending Movies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Archivo+Black&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ─── RESET & ROOT (RED THEME) ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0a0e17;
+            --panel: #111927;
+            --panel-2: #141b2b;
+            --border: #2a3442;
+            --red: #E31E24;
+            --red-soft: #ff3b3f;
+            --red-glow: rgba(227, 30, 36, 0.25);
+            --text: #f0f0f0;
+            --text-dim: #b9c3db;
+            --text-faint: #6a7a8a;
+            --shadow-red: 0 8px 24px rgba(227, 30, 36, 0.25);
+            --transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body {
+            background: var(--bg-deep);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── AURORA BG ─── */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: var(--bg-deep);
+        }
+        .aurora-bg::before,
+        .aurora-bg::after {
+            content: "";
+            position: absolute;
+            width: 70vw;
+            height: 70vw;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.20;
+        }
+        .aurora-bg::before {
+            background: radial-gradient(circle, #E31E24 0%, transparent 65%);
+            top: -15%;
+            left: -20%;
+        }
+        .aurora-bg::after {
+            background: radial-gradient(circle, #ff3b3f 0%, transparent 65%);
+            bottom: -25%;
+            right: -10%;
+            opacity: 0.10;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--panel);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--red);
+            border-radius: 4px;
+        }
+
+        /* ─── NAVBAR ─── */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 14, 23, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(227, 30, 36, 0.3);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo img {
+            height: 40px;
+            vertical-align: middle;
+        }
+        .logo h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #E31E24, #ff3b3f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--red);
+            transition: var(--transition);
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--red-soft);
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #1e2a3a;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .user-area:hover {
+            background: #2a3a4a;
+            border-color: var(--red);
+        }
+        .user-area i {
+            color: var(--red);
+            font-size: 1.2rem;
+        }
+        .user-area span {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            background: linear-gradient(135deg, #0a0e17 0%, #141b2b 100%);
+            padding: 2.5rem 5% 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(227, 30, 36, 0.12);
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--red), transparent);
+        }
+        .hero h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #E31E24, #ff3b3f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero h1 i {
+            color: var(--red);
+            margin-right: 8px;
+        }
+        .hero p {
+            color: var(--text-dim);
+            margin-top: 0.6rem;
+            font-size: 1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 1.2rem;
+        }
+        .hero-stats span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+        .hero-stats i {
+            color: var(--red);
+        }
+
+        /* ─── MAIN CONTAINER ─── */
+        .main-container {
+            padding: 2rem 5% 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ─── SECTION HEADER ─── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .section-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        .section-title span {
+            color: var(--red);
+        }
+        .section-title .count {
+            font-size: 0.9rem;
+            color: var(--text-faint);
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+        }
+
+        /* ─── MOVIE GRID ─── */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .movie-card {
+            background: var(--panel);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .movie-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(227, 30, 36, 0.50);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(227, 30, 36, 0.05);
+        }
+
+        .card-poster {
+            position: relative;
+            overflow: hidden;
+            background: #0b111e;
+        }
+        .card-poster img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+        .movie-card:hover .card-poster img {
+            transform: scale(1.04);
+        }
+
+        .card-badges {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .badge-trending {
+            background: linear-gradient(95deg, #E31E24, #ff3b3f);
+            color: white;
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(227, 30, 36, 0.3);
+        }
+        .badge-rating {
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(6px);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge-rating i {
+            font-size: 0.6rem;
+        }
+
+        .card-info {
+            padding: 16px 18px 20px;
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text);
+        }
+        .card-genre {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+        .card-genre .genre-tag {
+            background: rgba(227, 30, 36, 0.10);
+            padding: 2px 12px;
+            border-radius: 30px;
+            color: var(--red-soft);
+            font-weight: 500;
+            font-size: 0.7rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .btn-trailer,
+        .btn-book {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-trailer {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-trailer:hover {
+            background: rgba(227, 30, 36, 0.10);
+            border-color: var(--red);
+            color: var(--red-soft);
+            transform: scale(1.02);
+        }
+        .btn-book {
+            background: linear-gradient(95deg, #E31E24, #ff3b3f);
+            color: white;
+            font-weight: 700;
+            box-shadow: var(--shadow-red);
+        }
+        .btn-book:hover {
+            filter: brightness(1.08);
+            transform: scale(1.02);
+        }
+
+        /* ─── FULLSCREEN POPUP ─── */
+        #popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.94);
+            backdrop-filter: blur(20px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        #popup.show {
+            display: flex;
+        }
+        #video {
+            width: 90%;
+            max-width: 900px;
+            height: 75vh;
+            max-height: 600px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 0 60px rgba(227, 30, 36, 0.15);
+            background: #000;
+        }
+        .close-popup {
+            position: absolute;
+            top: 24px;
+            right: 30px;
+            font-size: 2.2rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        .close-popup:hover {
+            color: var(--red);
+            transform: rotate(90deg);
+        }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e2a3a;
+            border-left: 4px solid var(--red);
+            padding: 14px 24px;
+            border-radius: 12px;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 4000;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .toast i {
+            color: var(--red);
+            font-size: 1.1rem;
+        }
+        .toast.error {
+            border-left-color: #e74c3c;
+        }
+        .toast.error i {
+            color: #e74c3c;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: #050a12;
+            text-align: center;
+            padding: 1.8rem 5%;
+            border-top: 1px solid rgba(227, 30, 36, 0.20);
+            color: var(--text-faint);
+            font-size: 0.85rem;
+        }
+        footer .brand-footer {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.2rem;
+            color: white;
+            display: block;
+            margin-bottom: 4px;
+        }
+        footer .brand-footer span {
+            color: var(--red);
+        }
+        footer .socials {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 10px;
+        }
+        footer .socials i {
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        footer .socials i:hover {
+            color: var(--red);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 820px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px 5%;
+            }
+            .nav-links {
+                gap: 4px;
+                justify-content: center;
+            }
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.78rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero-stats {
+                gap: 16px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+                gap: 16px;
+            }
+            .card-poster img {
+                height: 240px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            #video {
+                height: 60vh;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.4rem;
+            }
+            .hero p {
+                font-size: 0.85rem;
+            }
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+            .card-poster img {
+                height: 200px;
+            }
+            .card-info {
+                padding: 12px 14px 16px;
+            }
+            .card-title {
+                font-size: 0.85rem;
+            }
+            .btn-trailer,
+            .btn-book {
+                font-size: 0.7rem;
+                padding: 8px;
+            }
+            #video {
+                height: 50vh;
+                max-height: 300px;
+            }
+            .close-popup {
+                top: 12px;
+                right: 16px;
+                font-size: 1.6rem;
+            }
+            .toast {
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                font-size: 0.8rem;
+                padding: 12px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── AURORA BG ─── -->
+    <div class="aurora-bg"></div>
+
+    <!-- ─── NAVBAR ─── -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="image/logo.png" alt="CNIMA Logo" />
+        </div>
+        <div class="nav-links">
+            <a href="Home.html">Home</a>
+            <a href="Movie.html" class="active">Movies</a>
+            <a href="Trending.html">Trending</a>
+            <a href="Offer.html">Offers</a>
+            <a href="Profile.html">Profile</a>
+            <a href="Setting.html">Settings</a>
+        </div>
+        <div class="user-area" id="userArea">
+            <i class="fas fa-user-circle"></i>
+            <span id="username">Visal</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--text-faint);"></i>
+        </div>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero">
+        <h1><i class="fas fa-fire"></i> <span>Trending</span> Movies</h1>
+        <p>Discover the most popular and talked-about movies right now. Book your tickets today!</p>
+        <div class="hero-stats">
+            <span><i class="fas fa-film"></i> 25 Movies</span>
+            <span><i class="fas fa-star"></i> 8.0+ Avg Rating</span>
+            <span><i class="fas fa-bolt"></i> Hottest Picks</span>
+        </div>
+    </section>
+
+    <!-- ─── MAIN ─── -->
+    <div class="main-container">
+        <div class="section-header">
+            <h2 class="section-title">🔥 <span>Trending</span> Now <span class="count">(25)</span></h2>
+            <span style="color:var(--text-faint); font-size:0.85rem;"><i class="fas fa-arrow-right" style="color:var(--red);"></i> Most popular this week</span>
+        </div>
+        <div class="movie-grid" id="movieGrid"></div>
+    </div>
+
+    <!-- ─── FULLSCREEN PLAYER ─── -->
+    <div id="popup">
+        <button class="close-popup" onclick="closePopup()"><i class="fas fa-times"></i></button>
+        <iframe id="video" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <span class="brand-footer">CNIMA<span>CINEMA</span></span>
+        <p>© 2026 — The ultimate cinematic journey · 25 Trending Movies</p>
+        <div class="socials">
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-facebook"></i>
+            <i class="fab fa-youtube"></i>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── 25 MOVIES (with fixed poster URLs for Thor Ragnarok, Frozen, Minions) ───
+            const movies = [
+                { t: "Interstellar", g: "Sci-Fi", r: 8.6,
+                    i: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+                    v: "https://youtu.be/zSWdZVtXT7E" },
+                { t: "Inception", g: "Sci-Fi", r: 8.8,
+                    i: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+                    v: "https://youtu.be/YoHD9XEInc0" },
+                { t: "The Dark Knight", g: "Action", r: 9.0,
+                    i: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+                    v: "https://youtu.be/EXeTwQWrcwY" },
+                { t: "Avengers Endgame", g: "Action", r: 8.4,
+                    i: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+                    v: "https://youtu.be/TcMBFSGVi1c" },
+                { t: "Avatar", g: "Sci-Fi", r: 7.8,
+                    i: "https://image.tmdb.org/t/p/w500/6EiRUJpuoeQPghrs3YNktfnqOVh.jpg",
+                    v: "https://youtu.be/5PSNL1qE6VY" },
+                { t: "Joker", g: "Drama", r: 8.5,
+                    i: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+                    v: "https://youtu.be/zAGVQLHvwOY" },
+                { t: "Fast 7", g: "Action", r: 7.2,
+                    i: "https://image.tmdb.org/t/p/w500/wurKlC3VKUgcfsn0K51MJYEleS2.jpg",
+                    v: "https://youtu.be/Skpu5HaVkOc" },
+                { t: "Spider-Man NWH", g: "Action", r: 8.3,
+                    i: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+                    v: "https://youtu.be/JfVOs4VSpmA" },
+                { t: "Doctor Strange 2", g: "Fantasy", r: 7.4,
+                    i: "https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg",
+                    v: "https://youtu.be/aWzlQ2N6qqg" },
+                { t: "Black Panther", g: "Action", r: 7.3,
+                    i: "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg",
+                    v: "https://youtu.be/xjDjIWPwcPU" },
+                { t: "Titanic", g: "Romance", r: 7.9,
+                    i: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
+                    v: "https://youtu.be/kVrqfYjkTdQ" },
+                { t: "The Matrix", g: "Sci-Fi", r: 8.7,
+                    i: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+                    v: "https://youtu.be/vKQi3bBA1y8" },
+                { t: "Avatar 2", g: "Sci-Fi", r: 7.6,
+                    i: "https://image.tmdb.org/t/p/w500/2EewmxXe72ogD0EaWM8gqa0ccIw.jpg",
+                    v: "https://youtu.be/d9MyW72ELq0" },
+                { t: "Top Gun Maverick", g: "Action", r: 8.3,
+                    i: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",
+                    v: "https://youtu.be/giXco2jaZ_4" },
+                { t: "Deadpool", g: "Action", r: 8.0,
+                    i: "https://image.tmdb.org/t/p/w500/yGSxMiF0cYuAiyuve5DA6bnWEOI.jpg",
+                    v: "https://youtu.be/ONHBaC-pfsk" },
+                { t: "Logan", g: "Action", r: 8.1,
+                    i: "https://image.tmdb.org/t/p/w500/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg",
+                    v: "https://youtu.be/Div0iP65aZo" },
+                { t: "Iron Man", g: "Action", r: 7.9,
+                    i: "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg",
+                    v: "https://youtu.be/8ugaeA-nMTc" },
+                // ─── FIXED: Thor Ragnarok ───
+                { t: "Thor Ragnarok", g: "Action", r: 7.9,
+                    i: "https://image.tmdb.org/t/p/original/rzRwTcFvttcN1ZpX2xv4j3tSDpL.jpg",
+                    v: "https://youtu.be/ue80QwXMRHg" },
+                { t: "Guardians Galaxy", g: "Action", r: 8.0,
+                    i: "https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg",
+                    v: "https://youtu.be/d96cjJhvlMA" },
+                // ─── FIXED: Frozen ───
+                { t: "Frozen", g: "Animation", r: 7.4,
+                    i: "https://image.tmdb.org/t/p/original/jIjdFXKUNtdf1bwqMrhearpyjMj.jpg",
+                    v: "https://youtu.be/TbQm5doF_Uc" },
+                { t: "Toy Story 4", g: "Animation", r: 7.8,
+                    i: "https://image.tmdb.org/t/p/w500/w9kR8qbmQ01HwnvK4alvnQ2ca0L.jpg",
+                    v: "https://youtu.be/wmiIUN-7qhE" },
+                // ─── FIXED: Minions ───
+                { t: "Minions", g: "Comedy", r: 6.4,
+                    i: "https://image.tmdb.org/t/p/original/q0R4crx2SehcEEQEkYObktdeFy.jpg",
+                    v: "https://youtu.be/eisKxhjBnZ0" },
+                { t: "Kung Fu Panda", g: "Animation", r: 7.6,
+                    i: "https://image.tmdb.org/t/p/w500/wWt4JYXTg5Wr3xBW2phBrMKgp3x.jpg",
+                    v: "https://youtu.be/PXi3Mv6KMzY" },
+                { t: "Shrek", g: "Comedy", r: 7.9,
+                    i: "https://image.tmdb.org/t/p/w500/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg",
+                    v: "https://youtu.be/CwXOrWvPBPk" },
+                { t: "The Lion King", g: "Animation", r: 8.5,
+                    i: "https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",
+                    v: "https://youtu.be/4sj1MT05lAA" }
+            ];
+
+            // ─── DOM REFS ───
+            const grid = document.getElementById('movieGrid');
+            const popup = document.getElementById('popup');
+            const video = document.getElementById('video');
+
+            // ─── HELPERS ───
+            function embedYoutube(url) {
+                let id = '';
+                if (url.includes('youtu.be/')) {
+                    id = url.split('youtu.be/')[1].split('?')[0];
+                } else if (url.includes('v=')) {
+                    id = url.split('v=')[1].split('&')[0];
+                } else {
+                    return url;
+                }
+                return 'https://www.youtube.com/embed/' + id;
+            }
+
+            // ─── TOAST ───
+            function showToast(message, isError = false) {
+                const existing = document.querySelector('.toast');
+                if (existing) existing.remove();
+
+                const toast = document.createElement('div');
+                toast.className = 'toast' + (isError ? ' error' : '');
+                toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
+                document.body.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 400);
+                }, 3500);
+            }
+
+            // ─── BOOK MOVIE ───
+            function bookMovie(title) {
+                showToast(`🎟️ "${title}" — Redirecting to booking...`);
+                setTimeout(() => {
+                    localStorage.setItem('selectedMovie', title);
+                    window.location.href = '/movie';
+                }, 900);
+            }
+
+            // ─── PLAY TRAILER ───
+            function playTrailer(url) {
+                const embedUrl = embedYoutube(url);
+                video.src = embedUrl + '?autoplay=1&rel=0';
+                popup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // ─── CLOSE POPUP ───
+            function closePopup() {
+                popup.classList.remove('show');
+                video.src = '';
+                document.body.style.overflow = '';
+            }
+
+            // ─── IMAGE FALLBACK HANDLER ───
+            function handleImageError(img, title) {
+                // Try placehold.co with the movie title as text
+                const fallbackUrl = 'https://placehold.co/400x600/141b2b/E31E24?text=' + encodeURIComponent(title);
+                img.src = fallbackUrl;
+                // If that fails too, use a solid color with just the movie initials
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    // Create a fallback div behind the image
+                    const parent = this.parentElement;
+                    if (parent && !parent.querySelector('.fallback-text')) {
+                        const fallbackDiv = document.createElement('div');
+                        fallbackDiv.className = 'fallback-text';
+                        fallbackDiv.style.cssText =
+                            'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#111927;color:var(--text);font-weight:700;font-size:1.1rem;text-align:center;padding:1rem;';
+                        const words = title.split(' ');
+                        let initials = words.map(w => w[0]).join('').toUpperCase();
+                        if (initials.length > 3) initials = initials.slice(0, 3);
+                        fallbackDiv.textContent = initials || title.slice(0, 3).toUpperCase();
+                        parent.appendChild(fallbackDiv);
+                    }
+                };
+            }
+
+            // ─── RENDER MOVIES ───
+            function renderMovies() {
+                grid.innerHTML = movies.map((m, index) => `
+                        <div class="movie-card" data-index="${index}">
+                            <div class="card-poster">
+                                <img src="${m.i}" alt="${m.t}" 
+                                     onerror="handleImageError(this, '${m.t.replace(/'/g, "\\'")}')" />
+                                <div class="card-badges">
+                                    <span class="badge-trending"><i class="fas fa-fire"></i> Trending</span>
+                                    <span class="badge-rating"><i class="fas fa-star"></i> ${m.r}</span>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <div class="card-title">${m.t}</div>
+                                <div class="card-genre"><span class="genre-tag">${m.g}</span></div>
+                                <div class="btn-group">
+                                    <button class="btn-trailer" onclick="window.playTrailer('${m.v}')">
+                                        <i class="fas fa-play"></i> Trailer
+                                    </button>
+                                    <button class="btn-book" onclick="window.bookMovie('${m.t.replace(/'/g, "\\'")}')">
+                                        <i class="fas fa-ticket-alt"></i> Book
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            // ─── EXPOSE TO GLOBAL ───
+            window.playTrailer = playTrailer;
+            window.closePopup = closePopup;
+            window.bookMovie = bookMovie;
+            window.showToast = showToast;
+            window.handleImageError = handleImageError;
+
+            // ─── POPUP BACKDROP CLOSE ───
+            popup.addEventListener('click', function(e) {
+                if (e.target === this) closePopup();
+            });
+
+            // ─── ESC KEY ───
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closePopup();
+            });
+
+            // ─── USER AREA CLICK ───
+            document.getElementById('userArea')?.addEventListener('click', function() {
+                window.location.href = '/profile';
+            });
+
+            // ─── LOAD USER ───
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    document.getElementById('username').innerText = user.username || user.email?.split('@')[0] || 'User';
+                } catch (e) { /* ignore */ }
+            }
+
+            // ─── INIT ───
+            renderMovies();
+
+            console.log('🔥 CNIMA · 25 Trending Movies loaded (Red Theme)');
+            console.log('💡 Click "Trailer" to watch, "Book" to reserve tickets');
+            console.log('✅ Fixed posters for: Thor Ragnarok, Frozen, Minions');
+
+        })();
+    </script>
+
+</body>
+</html>

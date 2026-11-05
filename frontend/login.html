@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LEGEND CINEMA | Immersive Log In</title>
+  <!-- Premium fonts: Inter for UI, Archivo Black for bold cinematic brand -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Archivo+Black&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #07090c;
+      --surface-glass: rgba(18, 22, 28, 0.75);
+      --surface-elevated: rgba(22, 26, 32, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(255, 255, 255, 0.18);
+      --red-cinema: #E31E24;
+      --red-glow: #ff4d52;
+      --text-primary: #F0F2F5;
+      --text-secondary: #9aa0b0;
+      --text-muted: #5f6673;
+      --shadow-red: 0 8px 24px rgba(227, 30, 36, 0.25);
+      --transition-smooth: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    body {
+      background: var(--bg-deep);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 1.5rem;
+    }
+
+    /* Dynamic cinematic background with subtle motion */
+    .cinema-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: radial-gradient(circle at 20% 30%, #1a1e2b 0%, #030405 90%);
+    }
+
+    .light-bleed {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .light-bleed::before {
+      content: "";
+      position: absolute;
+      width: 80vw;
+      height: 70vw;
+      background: radial-gradient(circle at 30% 40%, rgba(227, 30, 36, 0.12) 0%, transparent 70%);
+      top: -15%;
+      left: -10%;
+      filter: blur(90px);
+      animation: slowDrift 18s infinite alternate ease-in-out;
+    }
+
+    .light-bleed::after {
+      content: "";
+      position: absolute;
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(circle at 70% 70%, rgba(30, 100, 220, 0.1) 0%, transparent 70%);
+      bottom: -20%;
+      right: -10%;
+      filter: blur(100px);
+      animation: slowDrift 22s infinite alternate-reverse ease-in-out;
+    }
+
+    @keyframes slowDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(4%, 3%) scale(1.1); }
+    }
+
+    /* Main card – glassmorphism with professional cinema vibe */
+    .login-masterpiece {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      background: var(--surface-glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 2.5rem;
+      overflow: hidden;
+      box-shadow: 0 30px 55px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: var(--transition-smooth);
+    }
+
+    /* Left side: evocative cinema image with gradient overlay */
+    .visual-side {
+      flex: 1.1;
+      position: relative;
+      min-height: 580px;
+      background: #0b0d12;
+    }
+
+    .visual-side img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .visual-side:hover img {
+      transform: scale(1.02);
+    }
+
+    .visual-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7, 9, 12, 0.3) 0%, rgba(7, 9, 12, 0.7) 90%);
+      backdrop-filter: saturate(0.8);
+    }
+
+    .cinema-quote {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 2.5rem;
+      color: white;
+      font-weight: 500;
+      font-size: 1.1rem;
+      letter-spacing: 0.3px;
+      text-shadow: 0 4px 12px black;
+      border-left: 4px solid var(--red-cinema);
+      padding-left: 1.2rem;
+      line-height: 1.5;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Right panel – elegant form */
+    .form-side {
+      flex: 1;
+      padding: 3rem 3rem 3rem 3.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: rgba(14, 17, 22, 0.5);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-mini {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+      margin-bottom: 2rem;
+      color: white;
+      line-height: 1;
+    }
+
+    .brand-mini span {
+      color: var(--red-cinema);
+      font-weight: 800;
+    }
+
+    .welcome-text {
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.3px;
+    }
+
+    .sub-greeting {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 2.2rem;
+      font-weight: 500;
+      border-left: 3px solid var(--red-cinema);
+      padding-left: 1rem;
+    }
+
+    /* Role switch – polished segmented control */
+    .role-segment {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 3rem;
+      padding: 0.35rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .role-option {
+      flex: 1;
+      text-align: center;
+      padding: 0.8rem 0.5rem;
+      border-radius: 2.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .role-option i {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .role-option.active {
+      background: linear-gradient(105deg, #d71e26, #e63238);
+      color: white;
+      box-shadow: var(--shadow-red);
+      font-weight: 700;
+    }
+
+    .input-field {
+      margin-bottom: 1.6rem;
+    }
+
+    .input-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      background: rgba(10, 12, 16, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0.9rem;
+      padding: 0.85rem 1.2rem;
+      transition: var(--transition-smooth);
+      backdrop-filter: blur(6px);
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--red-cinema);
+      box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.2);
+      background: rgba(20, 22, 28, 0.8);
+    }
+
+    .input-wrapper i {
+      color: var(--text-muted);
+      font-size: 1rem;
+      width: 20px;
+    }
+
+    .input-wrapper input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 0.98rem;
+      font-weight: 500;
+      padding: 0 0.4rem;
+    }
+
+    .input-wrapper input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .password-toggle {
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    .admin-context {
+      background: rgba(227, 30, 36, 0.08);
+      border: 1px dashed rgba(227, 30, 36, 0.4);
+      border-radius: 0.9rem;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.8rem;
+      color: #ffb3b5;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .forgot-link {
+      text-align: right;
+      margin-bottom: 1.8rem;
+    }
+
+    .forgot-link a {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: var(--transition-smooth);
+    }
+
+    .forgot-link a:hover {
+      color: white;
+      border-bottom: 1px solid var(--red-cinema);
+    }
+
+    .btn-continue {
+      width: 100%;
+      background: linear-gradient(115deg, #c41921, #e6323a);
+      border: none;
+      padding: 1rem;
+      border-radius: 3rem;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      color: white;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 20px -8px rgba(227, 30, 36, 0.45);
+      margin-top: 0.4rem;
+    }
+
+    .btn-continue:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 18px 28px -8px rgba(227, 30, 36, 0.6);
+    }
+
+    .demo-note {
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 1rem;
+      padding: 1rem 1.3rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(8px);
+    }
+
+    .demo-note strong {
+      color: #f0f2f5;
+    }
+
+    .demo-note .highlight {
+      color: var(--red-glow);
+      font-weight: 700;
+    }
+
+    .error-flash {
+      background: rgba(227, 30, 36, 0.15);
+      border-left: 4px solid var(--red-cinema);
+      padding: 0.8rem 1.2rem;
+      border-radius: 0.6rem;
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Loading screen refinement */
+    .loading-shroud {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 3, 6, 0.96);
+      backdrop-filter: blur(18px);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-ring {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(227, 30, 36, 0.25);
+      border-top: 3px solid var(--red-cinema);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 1.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 850px) {
+      .login-masterpiece {
+        flex-direction: column;
+        border-radius: 2rem;
+      }
+      .visual-side {
+        min-height: 240px;
+      }
+      .form-side {
+        padding: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="cinema-backdrop"></div>
+<div class="light-bleed"></div>
+
+<!-- Immersive loading transition -->
+<div id="loadingShroud" class="loading-shroud">
+  <div class="loader-ring"></div>
+    <img src="./image/logo.png" 
+         alt="LEGEND CINEMA" 
+         style="width: 200px; height: auto; object-fit: contain; margin-bottom: 0.5rem;">
+  <div style="margin-top: 0.8rem; color: #9aa0b0; font-size: 0.8rem; letter-spacing: 1px;">PREPARING YOUR EXPERIENCE</div>
+</div>
+
+<main class="login-masterpiece">
+  <!-- Left cinematic image -->
+  <div class="visual-side">
+    <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80" alt="Dark cinema hall with red seats">
+    <div class="visual-overlay"></div>
+    <div class="cinema-quote">
+      "Where stories become<br>larger than life."
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="form-side">
+    <img src="./image/logo.png" 
+         alt="LEGEND CINEMA" 
+         style="width: 200px; height: auto; object-fit: contain; margin-bottom: 0.5rem;">
+    <div class="welcome-text">Welcome back</div>
+    <div class="sub-greeting">Sign in to your account</div>
+
+    <!-- Role switcher -->
+    <div class="role-segment" id="roleSelector">
+      <div class="role-option active" data-role="user" id="roleUserBtn">
+        <i class="fas fa-film"></i> Movie Fan
+      </div>
+      <div class="role-option" data-role="admin" id="roleAdminBtn">
+        <i class="fas fa-clapperboard"></i> Admin
+      </div>
+    </div>
+
+    <form id="loginForm" autocomplete="off" style="display: flex; flex-direction: column;">
+      <div class="input-field">
+        <span class="input-label">Username</span>
+        <div class="input-wrapper">
+          <i class="fas fa-user"></i>
+          <input type="text" id="usernameInput" placeholder="Enter username" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="input-field">
+        <span class="input-label">Password</span>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="passwordInput" placeholder="••••••••">
+          <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+        </div>
+      </div>
+
+      <!-- Admin hint (hidden by default) -->
+      <div id="adminHint" class="admin-context">
+        <i class="fas fa-shield-haltered"></i> Admin demo: any credentials accepted
+      </div>
+
+      <div class="forgot-link">
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-continue" id="loginButton">
+        <span>Sign In</span> <i class="fas fa-arrow-right"></i>
+      </button>
+
+      <div id="errorMessage" class="error-flash">
+        <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+      </div>
+    </form>
+
+    <div class="demo-note">
+      <i class="fas fa-ticket" style="margin-right: 6px;"></i> 
+      <strong>Fan access:</strong> <span class="highlight">sv34</span> / <span class="highlight">sv34</span> &nbsp;&nbsp;|&nbsp;&nbsp; 
+      <strong>Admin:</strong> <span class="highlight">any login</span> &nbsp;&nbsp;|&nbsp;&nbsp;
+      <strong>New?</strong> <a href="Register.html" style="color: var(--red-glow); text-decoration: none; font-weight: 600;">Create account</a>
+    </div>
+  </div>
+</main>
+
+<script>
+  (function() {
+    // --- Credentials & state ---
+    const USER_CRED = { username: "sv34", password: "sv34" };
+    let currentRole = "user"; // 'user' or 'admin'
+
+    // DOM elements
+    const roleUserBtn = document.getElementById('roleUserBtn');
+    const roleAdminBtn = document.getElementById('roleAdminBtn');
+    const usernameField = document.getElementById('usernameInput');
+    const passwordField = document.getElementById('passwordInput');
+    const togglePasswordIcon = document.getElementById('togglePassword');
+    const loginBtn = document.getElementById('loginButton');
+    const adminHint = document.getElementById('adminHint');
+    const errorDiv = document.getElementById('errorMessage');
+    const errorTextSpan = document.getElementById('errorText');
+    const loadingShroud = document.getElementById('loadingShroud');
+
+    // --- Helper: update UI based on role ---
+    function setRole(role) {
+      currentRole = role;
+      if (role === 'admin') {
+        roleAdminBtn.classList.add('active');
+        roleUserBtn.classList.remove('active');
+        adminHint.style.display = 'flex';
+        usernameField.placeholder = 'Admin ID or email';
+        passwordField.placeholder = 'Password (any)';
+      } else {
+        roleUserBtn.classList.add('active');
+        roleAdminBtn.classList.remove('active');
+        adminHint.style.display = 'none';
+        usernameField.placeholder = 'sv34';
+        passwordField.placeholder = 'sv34';
+      }
+      // Clear any error when switching
+      hideError();
+    }
+
+    // Attach role click events
+    roleUserBtn.addEventListener('click', () => setRole('user'));
+    roleAdminBtn.addEventListener('click', () => setRole('admin'));
+
+    // Toggle password visibility
+    togglePasswordIcon.addEventListener('click', () => {
+      const isPassword = passwordField.type === 'password';
+      passwordField.type = isPassword ? 'text' : 'password';
+      togglePasswordIcon.classList.toggle('fa-eye');
+      togglePasswordIcon.classList.toggle('fa-eye-slash');
+    });
+
+    // Error handling
+    function showError(text) {
+      errorTextSpan.textContent = text;
+      errorDiv.style.display = 'flex';
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 3500);
+    }
+
+    function hideError() {
+      errorDiv.style.display = 'none';
+    }
+
+    // Loading screen & redirect
+    function startLoadingAndRedirect(targetPage) {
+      loadingShroud.style.display = 'flex';
+      loginBtn.disabled = true;
+      
+      setTimeout(() => {
+        // Store session data
+        const sessionPayload = {
+          loggedIn: true,
+          role: currentRole,
+          timestamp: Date.now(),
+          username: currentRole === 'admin' ? (usernameField.value.trim() || 'AdminDirector') : USER_CRED.username
+        };
+        localStorage.setItem('legend_cinema_session', JSON.stringify(sessionPayload));
+        
+        // Redirect to appropriate page
+        window.location.href = targetPage;
+      }, 1700); // smooth cinematic delay
+    }
+
+    // ─── Core login logic (CONNECTED TO REGISTER) ───
+    function handleLoginAttempt(e) {
+      if (e) e.preventDefault();
+      
+      const rawUsername = usernameField.value.trim();
+      const rawPassword = passwordField.value;
+      
+      // Basic validation
+      if (rawUsername === '' || rawPassword === '') {
+        showError('Please enter both username and password.');
+        return;
+      }
+
+      // Admin path: any non-empty credentials accepted (demo)
+      if (currentRole === 'admin') {
+        startLoadingAndRedirect('AdminDashboard.html');
+        return;
+      }
+
+      // ─── User path: Check registered users first ───
+      let isValidUser = false;
+
+      // 1. Check against localStorage (from Register.html)
+      const storedUserRaw = localStorage.getItem('legend_cinema_registration');
+      if (storedUserRaw) {
+        try {
+          const storedUser = JSON.parse(storedUserRaw);
+          if (rawUsername === storedUser.username && rawPassword === storedUser.password) {
+            isValidUser = true;
+          }
+        } catch (parseError) {
+          console.warn('Could not parse registration data:', parseError);
+        }
+      }
+
+      // 2. Fallback to hardcoded demo credentials (sv34 / sv34)
+      if (!isValidUser && rawUsername === USER_CRED.username && rawPassword === USER_CRED.password) {
+        isValidUser = true;
+      }
+
+      // 3. Final decision
+      if (isValidUser) {
+        startLoadingAndRedirect('Home.html');
+      } else {
+        showError('Invalid credentials. Use sv34 / sv34 or your registered account.');
+      }
+    }
+
+    // Event listeners for login
+    loginBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleLoginAttempt();
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleLoginAttempt();
+    });
+
+    // Clear error on input focus
+    usernameField.addEventListener('focus', hideError);
+    passwordField.addEventListener('focus', hideError);
+
+    // Initialize default role and clean fields
+    setRole('user');
+    usernameField.value = '';
+    passwordField.value = '';
+
+    // Ensure loading overlay hidden on page load
+    window.addEventListener('load', () => {
+      loadingShroud.style.display = 'none';
+      loginBtn.disabled = false;
+    });
+
+  })();
+</script>
+</body>
+</html>

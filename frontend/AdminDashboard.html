@@ -1,0 +1,2574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>Cinema Elite | Admin + Profile Sync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Archivo+Black&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================
+                   ROOT & RESET — RED THEME
+                ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0b0d15;
+            --bg-secondary: #11142b;
+            --bg-card: #141834;
+            --bg-card-hover: #1a1f42;
+            --border-color: rgba(230, 57, 70, 0.10);
+            --red: #e63946;
+            --red-light: #ff4d4d;
+            --red-dark: #c1121f;
+            --red-gradient: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+            --text-primary: #f0f2fa;
+            --text-secondary: #989bb8;
+            --text-muted: #5e6188;
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --shadow-glow: 0 0 40px rgba(230, 57, 70, 0.10);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--red);
+            border-radius: 10px;
+        }
+
+        /* ============================================
+                   ADMIN CONTAINER
+                ============================================ */
+        .admin-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* ============================================
+                   SIDEBAR — Premium Glass
+                ============================================ */
+        .sidebar {
+            width: 280px;
+            background: rgba(17, 20, 43, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(230, 57, 70, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s ease;
+            z-index: 100;
+            height: 100vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--red), transparent);
+            opacity: 0.15;
+        }
+
+        .sidebar-header {
+            padding: 32px 24px 24px;
+            border-bottom: 1px solid rgba(230, 57, 70, 0.06);
+            text-align: center;
+            position: relative;
+        }
+
+        .sidebar-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 30%;
+            width: 40%;
+            height: 2px;
+            background: var(--red-gradient);
+            border-radius: 4px;
+            opacity: 0.3;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--red-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(230, 57, 70, 0.25);
+        }
+
+        .logo-icon i {
+            font-size: 1.6rem;
+            color: #0b0d15;
+        }
+
+        .logo h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--red-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .admin-badge {
+            background: rgba(230, 57, 70, 0.10);
+            border: 1px solid rgba(230, 57, 70, 0.15);
+            padding: 6px 18px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--red);
+            letter-spacing: 0.3px;
+        }
+
+        .admin-badge i {
+            font-size: 0.7rem;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            flex: 1;
+            padding: 20px 14px 16px;
+        }
+
+        .nav-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            padding: 0 16px 12px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            padding: 11px 18px;
+            margin: 3px 0;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: transform var(--transition);
+        }
+
+        .nav-item:hover {
+            background: rgba(230, 57, 70, 0.06);
+            color: #fff;
+            border-color: rgba(230, 57, 70, 0.08);
+        }
+
+        .nav-item:hover i {
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            background: rgba(230, 57, 70, 0.08);
+            color: var(--red);
+            border-color: rgba(230, 57, 70, 0.12);
+            box-shadow: inset 0 0 30px rgba(230, 57, 70, 0.02);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 20%;
+            height: 60%;
+            width: 3px;
+            background: var(--red-gradient);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .nav-item .badge-pill {
+            margin-left: auto;
+            background: rgba(230, 57, 70, 0.12);
+            color: var(--red);
+            font-size: 0.65rem;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 16px 24px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-footer .shield {
+            color: var(--red);
+            opacity: 0.5;
+        }
+
+        /* ============================================
+                   MAIN CONTENT
+                ============================================ */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: radial-gradient(ellipse at 20% 50%, rgba(20, 24, 52, 0.5), var(--bg-primary) 70%);
+        }
+
+        /* ============================================
+                   TOP BAR — Glass
+                ============================================ */
+        .top-bar {
+            background: rgba(17, 20, 43, 0.70);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(230, 57, 70, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            min-height: 76px;
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--red-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .page-title p span {
+            color: var(--red);
+            font-weight: 500;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 4px 18px 4px 4px;
+            border-radius: 50px;
+            border: 1px solid rgba(230, 57, 70, 0.06);
+            transition: border-color var(--transition);
+        }
+
+        .admin-profile:hover {
+            border-color: rgba(230, 57, 70, 0.15);
+        }
+
+        .admin-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--red);
+            object-fit: cover;
+        }
+
+        .admin-profile .admin-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .admin-profile .admin-role {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 500;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: #ef4444;
+            color: #fff;
+            border-color: #ef4444;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* ============================================
+                   CONTENT AREA
+                ============================================ */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 32px 40px;
+        }
+
+        /* ============================================
+                   STATS CARDS — Premium Red Theme
+                ============================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--red-gradient);
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(230, 57, 70, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+        }
+
+        .stat-card .stat-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(230, 57, 70, 0.06);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            border: 1px solid rgba(230, 57, 70, 0.06);
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover .stat-icon {
+            background: rgba(230, 57, 70, 0.12);
+            border-color: rgba(230, 57, 70, 0.12);
+        }
+
+        .stat-card .stat-icon i {
+            font-size: 1.6rem;
+            color: var(--red);
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 400;
+        }
+
+        .stat-card .stat-trend {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 30px;
+            background: rgba(46, 213, 115, 0.08);
+            color: #2ed573;
+        }
+
+        .stat-card .stat-trend.down {
+            background: rgba(239, 68, 68, 0.08);
+            color: #ef4444;
+        }
+
+        .stat-card .stat-trend.warning {
+            background: rgba(245, 158, 11, 0.08);
+            color: #f59e0b;
+        }
+
+        /* ============================================
+                   CARDS
+                ============================================ */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-bottom: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            transition: border-color var(--transition);
+        }
+
+        .card:hover {
+            border-color: rgba(230, 57, 70, 0.06);
+        }
+
+        .card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header h3 i {
+            color: var(--red);
+            font-size: 1.1rem;
+        }
+
+        .card-body {
+            padding: 22px 24px;
+        }
+
+        /* ============================================
+                   FORMS
+                ============================================ */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 11px 16px;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all var(--transition);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            border-color: var(--red);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* ============================================
+                   BUTTONS — Red Theme
+                ============================================ */
+        .btn-primary {
+            background: var(--red-gradient);
+            color: #0b0d15;
+            border: none;
+            padding: 10px 26px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(230, 57, 70, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(230, 57, 70, 0.30);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            padding: 10px 22px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 500;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+            color: #fff;
+            border-color: #ef4444;
+        }
+
+        .btn-edit {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 500;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: 6px;
+        }
+
+        .btn-edit:hover {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+
+        .btn-success {
+            background: rgba(46, 213, 115, 0.08);
+            border: 1px solid rgba(46, 213, 115, 0.12);
+            color: #2ed573;
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 500;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-success:hover {
+            background: #2ed573;
+            color: #0b0d15;
+            border-color: #2ed573;
+        }
+
+        .btn-save {
+            background: #2ed573;
+            color: #0b0d15;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-left: 8px;
+            font-size: 0.85rem;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(46, 213, 115, 0.25);
+        }
+
+        /* ============================================
+                   TABLES
+                ============================================ */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .movie-poster {
+            width: 42px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .status-confirmed {
+            color: #2ed573;
+            font-weight: 600;
+        }
+        .status-cancelled {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .status-completed {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        /* ============================================
+                   SEARCH BAR
+                ============================================ */
+        .search-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search-bar input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #fff;
+            font-size: 0.85rem;
+            width: 220px;
+            transition: all var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--red);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.04);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* ============================================
+                   SEAT MONITOR
+                ============================================ */
+        .seat-monitor {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            max-width: 500px;
+            margin: 20px auto 0;
+        }
+
+        .admin-seat {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            padding: 12px 4px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .admin-seat.booked {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .admin-seat.booked i {
+            margin-right: 4px;
+        }
+
+        .admin-seat:not(.booked):hover {
+            border-color: rgba(230, 57, 70, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .screen-line {
+            width: 45%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--red), var(--red-light), var(--red), transparent);
+            margin: 0 auto 16px;
+            border-radius: 4px;
+            opacity: 0.5;
+        }
+
+        /* ============================================
+                   MODALS — Premium Glass
+                ============================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: modalFade 0.3s ease;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            max-width: 560px;
+            width: 92%;
+            padding: 32px;
+            border: 1px solid rgba(230, 57, 70, 0.08);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+            animation: modalSlide 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h3 i {
+            color: var(--red);
+        }
+
+        .close-modal {
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all var(--transition);
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: var(--red);
+            transform: rotate(90deg);
+        }
+
+        /* ============================================
+                   TOAST
+                ============================================ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid rgba(230, 57, 70, 0.10);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 1100;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .toast i {
+            color: var(--red);
+            font-size: 1.1rem;
+        }
+
+        .toast.error i {
+            color: #ef4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============================================
+                   MOBILE MENU TOGGLE
+                ============================================ */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            z-index: 200;
+            background: var(--bg-card);
+            border: 1px solid rgba(230, 57, 70, 0.08);
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--red);
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-card);
+            transition: all var(--transition);
+        }
+
+        .menu-toggle:hover {
+            border-color: var(--red);
+        }
+
+        /* ============================================
+                   RESPONSIVE
+                ============================================ */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                left: -300px;
+                top: 0;
+                z-index: 150;
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .top-bar {
+                padding-left: 70px;
+                padding-right: 18px;
+            }
+            .content-area {
+                padding: 18px 18px 30px;
+            }
+            .admin-profile .admin-role {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .content-area {
+                padding: 14px 14px 24px;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 12px 16px 12px 70px;
+                min-height: auto;
+            }
+            .page-title h1 {
+                font-size: 1.2rem;
+            }
+            .admin-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .admin-profile {
+                padding: 4px 12px 4px 4px;
+            }
+            .admin-profile .admin-name {
+                font-size: 0.8rem;
+            }
+            .logout-btn {
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
+            .search-bar input {
+                width: 140px;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .card-body {
+                padding: 16px;
+            }
+            .seat-monitor {
+                gap: 8px;
+            }
+            .admin-seat {
+                padding: 8px 2px;
+                font-size: 0.65rem;
+            }
+            .modal-content {
+                padding: 24px 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .stat-card {
+                padding: 16px 18px;
+            }
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+            .stat-card .stat-icon {
+                width: 40px;
+                height: 40px;
+            }
+            .stat-card .stat-icon i {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ============================================
+                   PROFILE PAGE STYLES (embedded)
+                ============================================ */
+        .profile-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(230, 57, 70, 0.08);
+            padding: 28px 32px;
+            margin-top: 28px;
+        }
+
+        .profile-section h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .profile-section h2 i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .profile-section .sub {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 16px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 32px;
+        }
+        @media (max-width: 860px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        .profile-avatar-card {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            padding: 28px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .profile-avatar-card .avatar-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: var(--red-gradient);
+            padding: 4px;
+            box-shadow: 0 0 30px rgba(230, 57, 70, 0.2);
+        }
+        .profile-avatar-card .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-secondary);
+        }
+        .profile-avatar-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+        .profile-avatar-card .email {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .profile-avatar-card .badge {
+            display: inline-block;
+            background: var(--red-gradient);
+            color: #0b0d15;
+            padding: 4px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
+
+        .profile-stats-mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .profile-stats-mini .stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            padding: 12px 6px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .profile-stats-mini .stat-box .num {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--red);
+            font-family: 'Archivo Black', sans-serif;
+        }
+        .profile-stats-mini .stat-box .lbl {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .booking-form-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            padding: 24px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .booking-form-card h4 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .booking-form-card h4 i {
+            color: var(--red);
+        }
+        .booking-form-card .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 480px) {
+            .booking-form-card .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .booking-form-card .input-group {
+            margin-bottom: 10px;
+        }
+        .booking-form-card .input-group label {
+            font-size: 0.65rem;
+        }
+        .booking-form-card .input-group input,
+        .booking-form-card .input-group select {
+            padding: 8px 12px;
+            font-size: 0.82rem;
+        }
+
+        .booking-list-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .booking-list-card .empty-msg {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 30px 10px;
+        }
+        .booking-list-card .empty-msg i {
+            font-size: 2.2rem;
+            color: var(--red);
+            opacity: 0.3;
+            margin-bottom: 8px;
+        }
+
+        .mini-booking-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .mini-booking-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .mini-booking-item .info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .mini-booking-item .info .title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .mini-booking-item .info .meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .mini-booking-item .amount {
+            font-weight: 700;
+            color: var(--red);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ======== MOBILE TOGGLE ======== -->
+    <div class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- ======== ADMIN CONTAINER ======== -->
+    <div class="admin-container">
+
+        <!-- ============================================
+        SIDEBAR
+        ============================================ -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h2>Cinema Elite</h2>
+                </div>
+                <div class="admin-badge">
+                    <i class="fas fa-user-shield"></i> Admin · Visal
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-label">Main</div>
+                <div class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-tab="movies">
+                    <i class="fas fa-film"></i>
+                    <span>Manage Movies</span>
+                    <span class="badge-pill" id="movieCountBadge">0</span>
+                </div>
+                <div class="nav-item" data-tab="bookings">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Customer Bookings</span>
+                    <span class="badge-pill" id="bookingCountBadge">0</span>
+                </div>
+                <div class="nav-item" data-tab="monitor">
+                    <i class="fas fa-chair"></i>
+                    <span>Hall Monitor</span>
+                </div>
+                <div class="nav-item" data-tab="users">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                    <span class="badge-pill" id="userCountBadge">0</span>
+                </div>
+                <div class="nav-item" data-tab="profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>My Profile</span>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <span class="shield"><i class="fas fa-shield-alt"></i> Secure Admin Panel</span>
+                <span>© 2025 Cinema Elite · v2.0</span>
+            </div>
+        </div>
+
+        <!-- ============================================
+        MAIN CONTENT
+        ============================================ -->
+        <div class="main-content">
+
+            <!-- TOP BAR -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1 id="pageMainTitle">Dashboard</h1>
+                    <p id="pageSubTitle">Welcome back, <span>Administrator Visal</span></p>
+                </div>
+                <div class="admin-info">
+                    <div class="admin-profile">
+                        <img src="https://ui-avatars.com/api/?background=e63946&color=0b0d15&bold=true&name=Visal" alt="Visal" />
+                        <div>
+                            <div class="admin-name">Um Visal</div>
+                            <div class="admin-role">Super Administrator</div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div class="content-area">
+
+                <!-- ===== DASHBOARD TAB ===== -->
+                <div id="dashboardTab">
+                    <div class="stats-grid">
+                        <div class="stat-card" onclick="switchTab('dashboard')">
+                            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="stat-value" id="statSalesDynamics">+12.5%</div>
+                            <div class="stat-label">Sales Dynamics</div>
+                            <div class="stat-trend"><i class="fas fa-arrow-up"></i> This month</div>
+                        </div>
+                        <div class="stat-card" onclick="switchTab('bookings')">
+                            <div class="stat-icon"><i class="fas fa-file-invoice"></i></div>
+                            <div class="stat-value" id="statPendingInvoices">14</div>
+                            <div class="stat-label">Pending Invoices</div>
+                            <div class="stat-trend warning"><i class="fas fa-clock"></i> Needs attention</div>
+                        </div>
+                        <div class="stat-card" onclick="switchTab('bookings')">
+                            <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                            <div class="stat-value" id="statFundsReceived">$0</div>
+                            <div class="stat-label">Funds Received</div>
+                            <div class="stat-trend"><i class="fas fa-arrow-up"></i> +8.2%</div>
+                        </div>
+                        <div class="stat-card" onclick="switchTab('movies')">
+                            <div class="stat-icon"><i class="fas fa-film"></i></div>
+                            <div class="stat-value" id="statMovies">0</div>
+                            <div class="stat-label">Total Movies</div>
+                            <div class="stat-trend"><i class="fas fa-arrow-up"></i> Active</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Recent Bookings</h3>
+                            <button class="btn-secondary" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>Customer</th>
+                                            <th>Movie</th>
+                                            <th>Seats</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentBookingsList"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== MOVIES TAB ===== -->
+                <div id="moviesTab" class="hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-plus-circle"></i> Add New Movie</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label>Movie Title</label>
+                                    <input type="text" id="movieTitle" placeholder="e.g. Dune: Part Two" />
+                                </div>
+                                <div class="input-group">
+                                    <label>Genre</label>
+                                    <input type="text" id="movieGenre" placeholder="Sci-Fi, Action, Drama" />
+                                </div>
+                                <div class="input-group">
+                                    <label>Rating</label>
+                                    <input type="text" id="movieRating" placeholder="8.5" />
+                                </div>
+                                <div class="input-group">
+                                    <label>Year</label>
+                                    <input type="text" id="movieYear" placeholder="2024" />
+                                </div>
+                                <div class="input-group">
+                                    <label>Poster URL</label>
+                                    <input type="text" id="moviePoster" placeholder="https://image.tmdb.org/..." />
+                                </div>
+                                <div class="input-group">
+                                    <label>Director</label>
+                                    <input type="text" id="movieDirector" placeholder="Denis Villeneuve" />
+                                </div>
+                                <div class="input-group">
+                                    <label>Duration</label>
+                                    <input type="text" id="movieDuration" placeholder="2h 46m" />
+                                </div>
+                                <div class="input-group">
+                                    <label>Description</label>
+                                    <textarea id="movieDescription" rows="2" placeholder="Brief description…"></textarea>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="addMovie()">
+                                <i class="fas fa-save"></i> Add Movie
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-database"></i> Movie Library</h3>
+                            <div class="search-bar">
+                                <input type="text" id="movieSearch" placeholder="Search movies…" onkeyup="searchMovies()" />
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Poster</th>
+                                            <th>Title</th>
+                                            <th>Genre</th>
+                                            <th>Rating</th>
+                                            <th>Year</th>
+                                            <th>Director</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="movieList"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== BOOKINGS TAB ===== -->
+                <div id="bookingsTab" class="hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-list"></i> All Customer Bookings</h3>
+                            <div class="search-bar">
+                                <input type="text" id="bookingSearch" placeholder="Search by customer or movie…" onkeyup="searchBookings()" />
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Customer</th>
+                                            <th>Movie</th>
+                                            <th>Seats</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Theater</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="allBookingsList"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== MONITOR TAB ===== -->
+                <div id="monitorTab" class="hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chair"></i> Seat Occupancy Monitor</h3>
+                        </div>
+                        <div class="card-body" style="text-align: center;">
+                            <div class="input-group" style="max-width: 300px; margin: 0 auto 20px;">
+                                <label>Select Movie</label>
+                                <select id="monitorMovieSelect" onchange="renderHallMonitor()"></select>
+                            </div>
+                            <div class="screen-line"></div>
+                            <div id="hallGrid" class="seat-monitor"></div>
+                            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-secondary);">
+                                <span><i class="fas fa-square" style="color: rgba(255,255,255,0.05);"></i> Available</span>
+                                <span><i class="fas fa-square" style="color: rgba(239,68,68,0.4);"></i> Booked</span>
+                                <span><i class="fas fa-chair" style="color: var(--red);"></i> Total: 36 Seats</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== USERS TAB ===== -->
+                <div id="usersTab" class="hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-users"></i> Registered Users</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Avatar</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Member Since</th>
+                                            <th>Bookings</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersList"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PROFILE TAB (embedded) ===== -->
+                <div id="profileTab" class="hidden">
+                    <div class="profile-section">
+                        <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+                        <div class="sub">View your profile and manage your bookings — all data syncs with the admin dashboard.</div>
+
+                        <div class="profile-grid">
+                            <!-- left: avatar + stats -->
+                            <div class="profile-avatar-card">
+                                <div class="avatar-ring">
+                                    <img src="./image/images (1).jpg" alt="avatar" id="profileAvatar" onerror="this.src='https://ui-avatars.com/api/?background=e63946&color=fff&bold=true&size=120&name=Visal';" />
+                                </div>
+                                <h3 id="profileDisplayName">Um Visal</h3>
+                                <div class="email" id="profileEmail">visal@cinema.com</div>
+                                <span class="badge">🎬 Super Admin</span>
+                                <div class="profile-stats-mini">
+                                    <div class="stat-box">
+                                        <div class="num" id="profileTotalBookings">0</div>
+                                        <div class="lbl">Tickets</div>
+                                    </div>
+                                    <div class="stat-box">
+                                        <div class="num" id="profileTotalSpent">$0</div>
+                                        <div class="lbl">Spent</div>
+                                    </div>
+                                    <div class="stat-box">
+                                        <div class="num" id="profileTotalMovies">0</div>
+                                        <div class="lbl">Movies</div>
+                                    </div>
+                                </div>
+                                <button class="logout-btn" style="margin-top:16px; width:100%; justify-content:center;" onclick="handleLogout()">
+                                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                                </button>
+                            </div>
+
+                            <!-- right: booking form + my bookings -->
+                            <div>
+                                <!-- Booking Form -->
+                                <div class="booking-form-card" style="margin-bottom:18px;">
+                                    <h4><i class="fas fa-plus-circle"></i> Book a New Ticket</h4>
+                                    <div class="form-row">
+                                        <div class="input-group">
+                                            <label>Movie</label>
+                                            <select id="profileBookMovie">
+                                                <option value="The Dark Knight">The Dark Knight</option>
+                                                <option value="Inception">Inception</option>
+                                                <option value="Interstellar">Interstellar</option>
+                                                <option value="Dune: Part Two">Dune: Part Two</option>
+                                                <option value="Oppenheimer">Oppenheimer</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Seats (e.g. A5, A6)</label>
+                                            <input type="text" id="profileBookSeats" placeholder="A5, A6" value="A5" />
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Date</label>
+                                            <input type="date" id="profileBookDate" />
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Time</label>
+                                            <select id="profileBookTime">
+                                                <option>10:00 AM</option>
+                                                <option>1:00 PM</option>
+                                                <option selected>4:00 PM</option>
+                                                <option>7:00 PM</option>
+                                                <option>10:00 PM</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Theater</label>
+                                            <select id="profileBookTheater">
+                                                <option>IMAX Hall 1</option>
+                                                <option>4K Luxe Hall</option>
+                                                <option>Gold Class VIP</option>
+                                                <option>Standard Hall 4</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group">
+                                            <label>Total ($)</label>
+                                            <input type="number" id="profileBookTotal" value="30" step="1" />
+                                        </div>
+                                    </div>
+                                    <button class="btn-primary" onclick="profileBookTicket()" style="width:100%; justify-content:center; margin-top:6px;">
+                                        <i class="fas fa-ticket-alt"></i> Book Now
+                                    </button>
+                                </div>
+
+                                <!-- My Bookings List -->
+                                <div class="booking-list-card" id="profileBookingsList">
+                                    <div class="empty-msg">
+                                        <i class="fas fa-ticket-alt"></i>
+                                        <p>No bookings yet. Book a ticket above!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /content-area -->
+        </div><!-- /main-content -->
+    </div><!-- /admin-container -->
+
+    <!-- ============================================
+    MODALS
+    ============================================ -->
+
+    <!-- Edit Booking Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Booking</h3>
+                <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            </div>
+            <input type="hidden" id="editBookingId" />
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Booking ID</label>
+                    <input type="text" id="editBookingIdDisplay" readonly />
+                </div>
+                <div class="input-group">
+                    <label>Customer Email</label>
+                    <input type="text" id="editCustomer" placeholder="customer@example.com" />
+                </div>
+                <div class="input-group">
+                    <label>Movie</label>
+                    <select id="editMovie">
+                        <option>The Dark Knight</option>
+                        <option>Inception</option>
+                        <option>Interstellar</option>
+                        <option>Oppenheimer</option>
+                        <option>John Wick 4</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Seats (comma separated)</label>
+                    <input type="text" id="editSeats" placeholder="A5, A6" />
+                </div>
+                <div class="input-group">
+                    <label>Show Date</label>
+                    <input type="date" id="editDate" />
+                </div>
+                <div class="input-group">
+                    <label>Show Time</label>
+                    <select id="editTime">
+                        <option>10:00 AM</option>
+                        <option>1:00 PM</option>
+                        <option>4:00 PM</option>
+                        <option>7:00 PM</option>
+                        <option>10:00 PM</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Theater</label>
+                    <select id="editTheater">
+                        <option>IMAX Hall 1</option>
+                        <option>4K Luxe Hall</option>
+                        <option>Gold Class VIP</option>
+                        <option>Standard Hall 4</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Total ($)</label>
+                    <input type="number" id="editTotal" step="1" value="30" />
+                </div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <select id="editStatus">
+                        <option>Confirmed</option>
+                        <option>Cancelled</option>
+                        <option>Completed</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button class="btn-primary" style="flex:1;" onclick="saveBookingEdit()">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button class="btn-danger" style="flex:1;" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Movie Modal -->
+    <div id="editMovieModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Movie</h3>
+                <span class="close-modal" onclick="closeEditMovieModal()">&times;</span>
+            </div>
+            <input type="hidden" id="editMovieId" />
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Title</label>
+                    <input type="text" id="editMovieTitle" />
+                </div>
+                <div class="input-group">
+                    <label>Genre</label>
+                    <input type="text" id="editMovieGenre" />
+                </div>
+                <div class="input-group">
+                    <label>Rating</label>
+                    <input type="text" id="editMovieRating" />
+                </div>
+                <div class="input-group">
+                    <label>Year</label>
+                    <input type="text" id="editMovieYear" />
+                </div>
+                <div class="input-group">
+                    <label>Poster URL</label>
+                    <input type="text" id="editMoviePoster" />
+                </div>
+                <div class="input-group">
+                    <label>Director</label>
+                    <input type="text" id="editMovieDirector" />
+                </div>
+                <div class="input-group">
+                    <label>Duration</label>
+                    <input type="text" id="editMovieDuration" />
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button class="btn-primary" style="flex:1;" onclick="saveMovieEdit()">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button class="btn-danger" style="flex:1;" onclick="closeEditMovieModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-edit"></i> Edit Customer</h3>
+                <span class="close-modal" onclick="closeEditUserModal()">&times;</span>
+            </div>
+            <input type="hidden" id="editUserIndex" />
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="editUsername" />
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="editEmail" />
+                </div>
+                <div class="input-group">
+                    <label>Role</label>
+                    <select id="editRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button class="btn-primary" style="flex:1;" onclick="saveUserEdit()">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button class="btn-danger" style="flex:1;" onclick="closeEditUserModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+        // ============================================
+        // DATA STORE — SINGLE SOURCE OF TRUTH: allBookings
+        // ============================================
+        let movies = [];
+        let bookings = [];
+        let users = [];
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : ''}`;
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 2800);
+        }
+
+        // ============================================
+        // LOAD DATA
+        // ============================================
+        function loadData() {
+            // Movies
+            const savedMovies = localStorage.getItem('moviesList');
+            if (savedMovies) {
+                movies = JSON.parse(savedMovies);
+            } else {
+                movies = [
+                    { id: 1, title: "The Dark Knight", genre: "Action", rating: "9.0", year: "2008",
+                        poster: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+                        director: "Christopher Nolan", duration: "2h 32m" },
+                    { id: 2, title: "Inception", genre: "Sci-Fi", rating: "8.8", year: "2010",
+                        poster: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+                        director: "Christopher Nolan", duration: "2h 28m" },
+                    { id: 3, title: "Interstellar", genre: "Sci-Fi", rating: "8.7", year: "2014",
+                        poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+                        director: "Christopher Nolan", duration: "2h 49m" }
+                ];
+                localStorage.setItem('moviesList', JSON.stringify(movies));
+            }
+
+            // Bookings — shared with profile
+            const savedBookings = localStorage.getItem('allBookings');
+            if (savedBookings) {
+                bookings = JSON.parse(savedBookings);
+            } else {
+                bookings = [
+                    { id: "BK1001", user: "john@example.com", movie: "The Dark Knight", seats: "A5, A6",
+                        date: "2025-05-15", time: "7:00 PM", theater: "IMAX Hall 1", total: 30,
+                    status: "Confirmed" },
+                    { id: "BK1002", user: "jane@example.com", movie: "Inception", seats: "B2, B3",
+                        date: "2025-05-16", time: "4:00 PM", theater: "4K Luxe Hall", total: 30,
+                    status: "Confirmed" },
+                    { id: "BK1003", user: "mike@example.com", movie: "Interstellar", seats: "C1, C2, C3",
+                        date: "2025-05-17", time: "10:00 PM", theater: "IMAX Hall 1", total: 45,
+                    status: "Confirmed" },
+                    // Add a booking for the admin user so profile has data
+                    { id: "BK1004", user: "visal@cinema.com", movie: "Inception", seats: "D1, D2",
+                        date: "2025-05-18", time: "7:00 PM", theater: "Gold Class VIP", total: 40,
+                    status: "Confirmed" }
+                ];
+                localStorage.setItem('allBookings', JSON.stringify(bookings));
+            }
+
+            // Users
+            const savedUsers = localStorage.getItem('usersList');
+            if (savedUsers) {
+                users = JSON.parse(savedUsers);
+            } else {
+                users = [
+                    { id: 'U1001', username: "Um Visal", email: "visal@cinema.com", role: "admin",
+                        createdAt: "2024-01-01", bookings: 15 },
+                    { id: 'U1002', username: "MovieFan", email: "moviefan@example.com", role: "user",
+                        createdAt: "2024-02-15", bookings: 8 },
+                    { id: 'U1003', username: "JohnDoe", email: "john@example.com", role: "user",
+                        createdAt: "2024-03-10", bookings: 3 },
+                    { id: 'U1004', username: "JaneSmith", email: "jane@example.com", role: "user",
+                        createdAt: "2024-03-20", bookings: 5 }
+                ];
+                localStorage.setItem('usersList', JSON.stringify(users));
+            }
+
+            // Ensure currentUser exists for profile
+            if (!localStorage.getItem('currentUser')) {
+                const adminUser = { userId: 'U1001', email: 'visal@cinema.com', username: 'Um Visal', role: 'admin' };
+                localStorage.setItem('currentUser', JSON.stringify(adminUser));
+            }
+
+            updateBadges();
+            renderDashboard();
+        }
+
+        // ============================================
+        // BADGES
+        // ============================================
+        function updateBadges() {
+            document.getElementById('movieCountBadge').textContent = movies.length;
+            document.getElementById('bookingCountBadge').textContent = bookings.length;
+            document.getElementById('userCountBadge').textContent = users.length;
+        }
+
+        // ============================================
+        // SWITCH TAB
+        // ============================================
+        function switchTab(tabName) {
+            document.getElementById('dashboardTab').classList.add('hidden');
+            document.getElementById('moviesTab').classList.add('hidden');
+            document.getElementById('bookingsTab').classList.add('hidden');
+            document.getElementById('monitorTab').classList.add('hidden');
+            document.getElementById('usersTab').classList.add('hidden');
+            document.getElementById('profileTab').classList.add('hidden');
+
+            const tabMap = {
+                dashboard: 'dashboardTab',
+                movies: 'moviesTab',
+                bookings: 'bookingsTab',
+                monitor: 'monitorTab',
+                users: 'usersTab',
+                profile: 'profileTab'
+            };
+            const target = tabMap[tabName];
+            if (target) document.getElementById(target).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+
+            const titles = {
+                dashboard: { title: "Dashboard", sub: "Overview of your cinema" },
+                movies: { title: "Movie Management", sub: "Add, edit or remove movies" },
+                bookings: { title: "Booking Management", sub: "View and manage customer bookings" },
+                monitor: { title: "Hall Monitor", sub: "Real-time seat occupancy" },
+                users: { title: "User Management", sub: "Manage registered users" },
+                profile: { title: "My Profile", sub: "Manage your account and bookings" }
+            };
+            const t = titles[tabName] || titles.dashboard;
+            document.getElementById('pageMainTitle').innerText = t.title;
+            document.getElementById('pageSubTitle').innerHTML = `Welcome back, <span>Administrator Visal</span> · ${t.sub}`;
+
+            // Always refresh localStorage state when switching tabs,
+            // so new user bookings appear on Admin dashboard immediately.
+            loadData();
+
+            if (tabName === 'dashboard') renderDashboard();
+            if (tabName === 'movies') renderMovies();
+            if (tabName === 'bookings') renderAllBookings();
+            if (tabName === 'monitor') { populateMovieSelect();
+                renderHallMonitor(); }
+            if (tabName === 'users') renderUsers();
+            if (tabName === 'profile') renderProfileTab();
+
+            document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+        function renderDashboard() {
+            document.getElementById('statMovies').innerText = movies.length;
+            const totalBookings = bookings.length;
+            const pendingInvoices = Math.max(0, totalBookings - 2);
+            document.getElementById('statPendingInvoices').innerText = pendingInvoices;
+            const totalRevenue = bookings.reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
+            document.getElementById('statFundsReceived').innerText = `$${totalRevenue}`;
+            document.getElementById('statSalesDynamics').innerText = '+12.5%';
+
+            const recent = bookings.slice(-5).reverse();
+            document.getElementById('recentBookingsList').innerHTML = recent.map(b =>
+                `<tr>
+                        <td><strong>${b.id}</strong></td>
+                        <td>${b.user}</td>
+                        <td>${b.movie}</td>
+                        <td>${b.seats}</td>
+                        <td>$${b.total}</td>
+                        <td class="status-${b.status?.toLowerCase() || 'confirmed'}">${b.status || 'Confirmed'}</td>
+                    </tr>`
+            ).join('');
+
+            updateBadges();
+        }
+
+        // ============================================
+        // MOVIES (unchanged, kept for completeness)
+        // ============================================
+        function renderMovies() {
+            const container = document.getElementById('movieList');
+            container.innerHTML = movies.map(m =>
+                `<tr>
+                        <td><img src="${m.poster}" class="movie-poster" onerror="this.src='https://placehold.co/42x56/1a1f42/red?text=🎬'" /></td>
+                        <td><strong>${m.title}</strong></td>
+                        <td>${m.genre}</td>
+                        <td>⭐ ${m.rating}</td>
+                        <td>${m.year}</td>
+                        <td>${m.director || '—'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="openEditMovieModal(${m.id})"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-danger" onclick="deleteMovie(${m.id})"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>`
+            ).join('');
+            updateBadges();
+        }
+
+        function searchMovies() {
+            const term = document.getElementById('movieSearch').value.toLowerCase();
+            const filtered = movies.filter(m => m.title.toLowerCase().includes(term));
+            document.getElementById('movieList').innerHTML = filtered.map(m =>
+                `<tr>
+                        <td><img src="${m.poster}" class="movie-poster" onerror="this.src='https://placehold.co/42x56/1a1f42/red?text=🎬'" /></td>
+                        <td><strong>${m.title}</strong></td>
+                        <td>${m.genre}</td>
+                        <td>⭐ ${m.rating}</td>
+                        <td>${m.year}</td>
+                        <td>${m.director || '—'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="openEditMovieModal(${m.id})"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-danger" onclick="deleteMovie(${m.id})"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>`
+            ).join('');
+        }
+
+        function addMovie() {
+            const title = document.getElementById('movieTitle').value.trim();
+            const genre = document.getElementById('movieGenre').value.trim();
+            if (!title || !genre) { showToast('Please fill in Title and Genre', true); return; }
+            movies.push({
+                id: Date.now(),
+                title,
+                genre,
+                rating: document.getElementById('movieRating').value.trim() || 'N/A',
+                year: document.getElementById('movieYear').value.trim() || '2024',
+                poster: document.getElementById('moviePoster').value.trim() ||
+                    `https://placehold.co/300x400/1a1f42/red?text=${encodeURIComponent(title)}`,
+                director: document.getElementById('movieDirector').value.trim() || 'Various',
+                duration: document.getElementById('movieDuration').value.trim() || '2h'
+            });
+            localStorage.setItem('moviesList', JSON.stringify(movies));
+            renderMovies();
+            showToast(`"${title}" added successfully!`);
+            document.querySelectorAll('#moviesTab input, #moviesTab textarea').forEach(i => i.value = '');
+            updateBadges();
+        }
+
+        function openEditMovieModal(id) {
+            const m = movies.find(m => m.id === id);
+            if (!m) return;
+            document.getElementById('editMovieId').value = id;
+            document.getElementById('editMovieTitle').value = m.title;
+            document.getElementById('editMovieGenre').value = m.genre;
+            document.getElementById('editMovieRating').value = m.rating;
+            document.getElementById('editMovieYear').value = m.year;
+            document.getElementById('editMoviePoster').value = m.poster;
+            document.getElementById('editMovieDirector').value = m.director || '';
+            document.getElementById('editMovieDuration').value = m.duration || '';
+            document.getElementById('editMovieModal').classList.add('active');
+        }
+
+        function closeEditMovieModal() {
+            document.getElementById('editMovieModal').classList.remove('active');
+        }
+
+        function saveMovieEdit() {
+            const id = parseInt(document.getElementById('editMovieId').value);
+            const index = movies.findIndex(m => m.id === id);
+            if (index !== -1) {
+                movies[index].title = document.getElementById('editMovieTitle').value.trim() || movies[index].title;
+                movies[index].genre = document.getElementById('editMovieGenre').value.trim() || movies[index].genre;
+                movies[index].rating = document.getElementById('editMovieRating').value.trim() || movies[index].rating;
+                movies[index].year = document.getElementById('editMovieYear').value.trim() || movies[index].year;
+                movies[index].poster = document.getElementById('editMoviePoster').value.trim() || movies[index].poster;
+                movies[index].director = document.getElementById('editMovieDirector').value.trim() || movies[index]
+                    .director;
+                movies[index].duration = document.getElementById('editMovieDuration').value.trim() || movies[index]
+                    .duration;
+                localStorage.setItem('moviesList', JSON.stringify(movies));
+                renderMovies();
+                closeEditMovieModal();
+                showToast('Movie updated!');
+                updateBadges();
+            }
+        }
+
+        function deleteMovie(id) {
+            if (confirm('Delete this movie permanently?')) {
+                movies = movies.filter(m => m.id !== id);
+                localStorage.setItem('moviesList', JSON.stringify(movies));
+                renderMovies();
+                showToast('Movie deleted');
+                updateBadges();
+            }
+        }
+
+        // ============================================
+        // BOOKINGS (admin)
+        // ============================================
+        function renderAllBookings() {
+            const container = document.getElementById('allBookingsList');
+            container.innerHTML = bookings.map(b =>
+                `<tr>
+                        <td><strong>${b.id}</strong></td>
+                        <td>${b.user}</td>
+                        <td>${b.movie}</td>
+                        <td>${b.seats}</td>
+                        <td>${b.date || 'N/A'}</td>
+                        <td>${b.time || '7:00 PM'}</td>
+                        <td>${b.theater || 'IMAX Hall 1'}</td>
+                        <td>$${b.total || 30}</td>
+                        <td class="status-${b.status?.toLowerCase() || 'confirmed'}">${b.status || 'Confirmed'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="openEditModal('${b.id}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-danger" onclick="cancelBooking('${b.id}')"><i class="fas fa-times"></i> Cancel</button>
+                        </td>
+                    </tr>`
+            ).join('');
+            updateBadges();
+        }
+
+        function searchBookings() {
+            const term = document.getElementById('bookingSearch').value.toLowerCase();
+            const filtered = bookings.filter(b =>
+                b.user.toLowerCase().includes(term) ||
+                b.movie.toLowerCase().includes(term)
+            );
+            document.getElementById('allBookingsList').innerHTML = filtered.map(b =>
+                `<tr>
+                        <td><strong>${b.id}</strong></td>
+                        <td>${b.user}</td>
+                        <td>${b.movie}</td>
+                        <td>${b.seats}</td>
+                        <td>${b.date || 'N/A'}</td>
+                        <td>${b.time || '7:00 PM'}</td>
+                        <td>${b.theater || 'IMAX Hall 1'}</td>
+                        <td>$${b.total || 30}</td>
+                        <td class="status-${b.status?.toLowerCase() || 'confirmed'}">${b.status || 'Confirmed'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="openEditModal('${b.id}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-danger" onclick="cancelBooking('${b.id}')"><i class="fas fa-times"></i> Cancel</button>
+                        </td>
+                    </tr>`
+            ).join('');
+        }
+
+        function openEditModal(id) {
+            const b = bookings.find(b => b.id === id);
+            if (!b) return;
+            document.getElementById('editBookingId').value = id;
+            document.getElementById('editBookingIdDisplay').value = id;
+            document.getElementById('editCustomer').value = b.user;
+            document.getElementById('editMovie').value = b.movie;
+            document.getElementById('editSeats').value = b.seats;
+            document.getElementById('editDate').value = b.date || new Date().toISOString().split('T')[0];
+            document.getElementById('editTime').value = b.time || '7:00 PM';
+            document.getElementById('editTheater').value = b.theater || 'IMAX Hall 1';
+            document.getElementById('editTotal').value = b.total || 30;
+            document.getElementById('editStatus').value = b.status || 'Confirmed';
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function saveBookingEdit() {
+            const id = document.getElementById('editBookingId').value;
+            const index = bookings.findIndex(b => b.id === id);
+            if (index !== -1) {
+                bookings[index].user = document.getElementById('editCustomer').value.trim() || bookings[index].user;
+                bookings[index].movie = document.getElementById('editMovie').value;
+                bookings[index].seats = document.getElementById('editSeats').value.trim() || bookings[index].seats;
+                bookings[index].date = document.getElementById('editDate').value || bookings[index].date;
+                bookings[index].time = document.getElementById('editTime').value;
+                bookings[index].theater = document.getElementById('editTheater').value;
+                bookings[index].total = parseInt(document.getElementById('editTotal').value) || bookings[index].total;
+                bookings[index].status = document.getElementById('editStatus').value;
+                localStorage.setItem('allBookings', JSON.stringify(bookings));
+                renderAllBookings();
+                closeEditModal();
+                showToast(`Booking ${id} updated!`);
+                renderDashboard();
+                if (!document.getElementById('monitorTab').classList.contains('hidden')) renderHallMonitor();
+                updateBadges();
+                // Also refresh profile if visible
+                if (!document.getElementById('profileTab').classList.contains('hidden')) renderProfileTab();
+            }
+        }
+
+        function cancelBooking(id) {
+            if (confirm('Cancel this booking?')) {
+                bookings = bookings.filter(b => b.id !== id);
+                localStorage.setItem('allBookings', JSON.stringify(bookings));
+                renderAllBookings();
+                showToast('Booking cancelled');
+                renderDashboard();
+                if (!document.getElementById('monitorTab').classList.contains('hidden')) renderHallMonitor();
+                updateBadges();
+                if (!document.getElementById('profileTab').classList.contains('hidden')) renderProfileTab();
+            }
+        }
+
+        // ============================================
+        // HALL MONITOR
+        // ============================================
+        function populateMovieSelect() {
+            const select = document.getElementById('monitorMovieSelect');
+            select.innerHTML = movies.map(m => `<option value="${m.title}">${m.title}</option>`).join('');
+            if (select.options.length) renderHallMonitor();
+        }
+
+        function renderHallMonitor() {
+            const selectedMovie = document.getElementById('monitorMovieSelect').value;
+            if (!selectedMovie) return;
+            const grid = document.getElementById('hallGrid');
+            grid.innerHTML = '';
+            let takenSeats = [];
+            bookings.filter(b => b.movie === selectedMovie).forEach(b => {
+                const seats = b.seats.includes(',') ? b.seats.split(',').map(s => s.trim()) : [b.seats];
+                takenSeats.push(...seats);
+            });
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
+            for (let r of rows) {
+                for (let i = 1; i <= 6; i++) {
+                    const seatName = `${r}${i}`;
+                    const isBooked = takenSeats.includes(seatName);
+                    const seatDiv = document.createElement('div');
+                    seatDiv.className = `admin-seat ${isBooked ? 'booked' : ''}`;
+                    seatDiv.innerHTML = isBooked ? `<i class="fas fa-user"></i> ${seatName}` : seatName;
+                    grid.appendChild(seatDiv);
+                }
+            }
+        }
+
+        // ============================================
+        // USERS
+        // ============================================
+        function renderUsers() {
+            document.getElementById('usersList').innerHTML = users.map((u, index) =>
+                `<tr>
+                        <td><img src="https://ui-avatars.com/api/?background=e63946&color=0b0d15&name=${encodeURIComponent(u.username)}" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(230,57,70,0.1);" /></td>
+                        <td><strong>${u.username}</strong></td>
+                        <td>${u.email}</td>
+                        <td>${u.role === 'admin' ? '<span style="color:var(--red);"><i class="fas fa-crown"></i> Admin</span>' : '<span style="color:#2ed573;">User</span>'}</td>
+                        <td>${u.createdAt}</td>
+                        <td>${u.bookings} bookings</td>
+                        <td>
+                            <button class="btn-edit" onclick="openEditUserModal(${index})"><i class="fas fa-edit"></i> Edit</button>
+                            ${u.role !== 'admin' ? `<button class="btn-success" onclick="promoteUser(${index})"><i class="fas fa-arrow-up"></i> Promote</button>` : '<span style="color:var(--red);font-size:0.7rem;">Master</span>'}
+                        </td>
+                    </tr>`
+            ).join('');
+            updateBadges();
+        }
+
+        function openEditUserModal(index) {
+            const user = users[index];
+            if (!user) return;
+            document.getElementById('editUserIndex').value = index;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editRole').value = user.role;
+            document.getElementById('editUserModal').classList.add('active');
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+        }
+
+        function saveUserEdit() {
+            const index = parseInt(document.getElementById('editUserIndex').value);
+            if (isNaN(index) || !users[index]) return;
+            users[index].username = document.getElementById('editUsername').value.trim() || users[index].username;
+            users[index].email = document.getElementById('editEmail').value.trim() || users[index].email;
+            users[index].role = document.getElementById('editRole').value;
+            localStorage.setItem('usersList', JSON.stringify(users));
+            renderUsers();
+            closeEditUserModal();
+            showToast('Customer updated!');
+            renderDashboard();
+            updateBadges();
+        }
+
+        function promoteUser(index) {
+            if (!users[index]) return;
+            users[index].role = 'admin';
+            localStorage.setItem('usersList', JSON.stringify(users));
+            renderUsers();
+            showToast(`${users[index].username} promoted to Admin!`);
+            renderDashboard();
+            updateBadges();
+        }
+
+        // ============================================
+        // PROFILE TAB — CONNECTED TO ADMIN DATA
+        // ============================================
+        function renderProfileTab() {
+            // Get current user from localStorage
+            let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser) {
+                currentUser = { userId: 'U1001', email: 'visal@cinema.com', username: 'Um Visal', role: 'admin' };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+
+            const email = currentUser.email;
+            const name = currentUser.username || 'Cinema Fan';
+
+            // Update profile UI
+            document.getElementById('profileDisplayName').textContent = name;
+            document.getElementById('profileEmail').textContent = email;
+
+            // Avatar fallback
+            const avatar = document.getElementById('profileAvatar');
+            avatar.onerror = function() {
+                this.src = `https://ui-avatars.com/api/?background=e63946&color=fff&bold=true&size=120&name=${encodeURIComponent(name)}`;
+            };
+
+            // Filter bookings for this user
+            const userBookings = bookings.filter(b => b.user === email);
+
+            // Stats
+            const totalTickets = userBookings.reduce((sum, b) => {
+                const seats = b.seats ? b.seats.split(',').length : 1;
+                return sum + seats;
+            }, 0);
+            const totalSpent = userBookings.reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
+            const uniqueMovies = new Set(userBookings.map(b => b.movie)).size;
+
+            document.getElementById('profileTotalBookings').textContent = totalTickets;
+            document.getElementById('profileTotalSpent').textContent = `$${totalSpent.toFixed(2)}`;
+            document.getElementById('profileTotalMovies').textContent = uniqueMovies;
+
+            // Render booking list
+            const listContainer = document.getElementById('profileBookingsList');
+            if (userBookings.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-msg">
+                        <i class="fas fa-ticket-alt"></i>
+                        <p>No bookings yet. Book a ticket above!</p>
+                    </div>
+                `;
+            } else {
+                listContainer.innerHTML = userBookings.map(b =>
+                    `<div class="mini-booking-item">
+                        <div class="info">
+                            <span class="title">${b.movie}</span>
+                            <span class="meta">${b.seats} · ${b.date || 'N/A'} · ${b.time || 'N/A'} · ${b.theater || 'IMAX'}</span>
+                        </div>
+                        <div class="amount">$${b.total || 0}</div>
+                    </div>`
+                ).join('');
+            }
+
+            // Set default date for booking form
+            if (!document.getElementById('profileBookDate').value) {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('profileBookDate').value = today;
+            }
+        }
+
+        // ============================================
+        // PROFILE BOOKING — SAVES TO allBookings
+        // ============================================
+        function profileBookTicket() {
+            const movie = document.getElementById('profileBookMovie').value;
+            const seatsRaw = document.getElementById('profileBookSeats').value.trim();
+            const date = document.getElementById('profileBookDate').value;
+            const time = document.getElementById('profileBookTime').value;
+            const theater = document.getElementById('profileBookTheater').value;
+            const total = parseInt(document.getElementById('profileBookTotal').value) || 30;
+
+            if (!seatsRaw) {
+                showToast('Please enter at least one seat', true);
+                return;
+            }
+            if (!date) {
+                showToast('Please select a date', true);
+                return;
+            }
+
+            // Get current user
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const userEmail = currentUser ? currentUser.email : 'visal@cinema.com';
+
+            // Create booking
+            const newBooking = {
+                id: 'BK' + Date.now().toString().slice(-6),
+                user: userEmail,
+                movie: movie,
+                seats: seatsRaw,
+                date: date,
+                time: time,
+                theater: theater,
+                total: total,
+                status: 'Confirmed'
+            };
+
+            // Save to allBookings
+            bookings.push(newBooking);
+            localStorage.setItem('allBookings', JSON.stringify(bookings));
+
+            // Also update the user's booking count in users list
+            const userIndex = users.findIndex(u => u.email === userEmail);
+            if (userIndex !== -1) {
+                users[userIndex].bookings = (users[userIndex].bookings || 0) + 1;
+                localStorage.setItem('usersList', JSON.stringify(users));
+            }
+
+            showToast(`🎬 "${movie}" booked for ${seatsRaw}!`);
+
+            // Refresh all views
+            renderDashboard();
+            renderAllBookings();
+            renderProfileTab();
+            updateBadges();
+            if (!document.getElementById('monitorTab').classList.contains('hidden')) renderHallMonitor();
+
+            // Clear seats field for next booking
+            document.getElementById('profileBookSeats').value = '';
+        }
+
+        // ============================================
+        // UTILITY
+        // ============================================
+        function refreshData() { loadData();
+            showToast('Data refreshed!'); }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            showToast('Logging out…');
+            setTimeout(() => window.location.href = '/', 500);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => switchTab(item.getAttribute('data-tab')));
+        });
+
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        window.onclick = (e) => {
+            if (e.target === document.getElementById('editModal')) closeEditModal();
+            if (e.target === document.getElementById('editMovieModal')) closeEditMovieModal();
+            if (e.target === document.getElementById('editUserModal')) closeEditUserModal();
+        };
+
+        // ============================================
+        // INIT
+        // ============================================
+        loadData();
+        switchTab('dashboard');
+    </script>
+</body>
+</html>

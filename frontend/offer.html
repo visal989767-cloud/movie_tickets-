@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>CNIMA · Offers & Promotions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Archivo+Black&display=swap" rel="stylesheet" />
+    <style>
+        /* ─── Reset & Variables ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #07090c;
+            --surface-glass: rgba(18, 22, 28, 0.75);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --red-cinema: #E31E24;
+            --red-glow: #ff4d52;
+            --red-dim: rgba(227, 30, 36, 0.15);
+            --text-primary: #F0F2F5;
+            --text-secondary: #9aa0b0;
+            --text-muted: #5f6673;
+            --shadow-red: 0 8px 24px rgba(227, 30, 36, 0.25);
+            --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.6);
+            --transition-smooth: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            --radius-card: 1.5rem;
+            --radius-full: 3rem;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── Cinematic Backdrop ─── */
+        .cinema-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 30%, #1a1e2b 0%, #030405 90%);
+        }
+        .light-bleed {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .light-bleed::before {
+            content: "";
+            position: absolute;
+            width: 80vw;
+            height: 70vw;
+            background: radial-gradient(circle at 30% 40%, rgba(227, 30, 36, 0.12) 0%, transparent 70%);
+            top: -15%;
+            left: -10%;
+            filter: blur(90px);
+            animation: slowDrift 18s infinite alternate ease-in-out;
+        }
+        .light-bleed::after {
+            content: "";
+            position: absolute;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle at 70% 70%, rgba(30, 100, 220, 0.08) 0%, transparent 70%);
+            bottom: -20%;
+            right: -10%;
+            filter: blur(100px);
+            animation: slowDrift 22s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes slowDrift {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(4%, 3%) scale(1.1);
+            }
+        }
+
+        /* ─── Top Navbar ─── */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 14, 23, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(227, 30, 36, 0.3);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+            vertical-align: middle;
+            border-radius: 8px;
+            background: #fff;
+            padding: 4px;
+        }
+        .logo h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+        .logo h2 span {
+            color: var(--red-cinema);
+        }
+        .nav-links-top {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links-top a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-links-top a:hover,
+        .nav-links-top a.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--red-cinema);
+        }
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(30, 42, 58, 0.7);
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+        }
+        .user-area:hover {
+            background: var(--red-dim);
+            border-color: var(--red-cinema);
+        }
+        .user-area i {
+            color: var(--red-cinema);
+            font-size: 1.2rem;
+        }
+        .user-area span {
+            font-weight: 500;
+        }
+
+        /* ─── Container ─── */
+        .container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 2rem 2rem 3rem;
+        }
+
+        /* ─── Hero Banner ─── */
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(227, 30, 36, 0.20), rgba(10, 14, 23, 0.9)),
+                url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            border-radius: var(--radius-card);
+            padding: 4rem 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(7, 9, 12, 0.8) 30%, transparent 100%);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--red-cinema);
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-red);
+        }
+        .hero-content h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 3.2rem;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .hero-content h1 span {
+            color: var(--red-cinema);
+        }
+        .hero-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 480px;
+            margin-bottom: 1.8rem;
+        }
+        .hero-btn {
+            background: var(--red-cinema);
+            border: none;
+            padding: 14px 36px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            box-shadow: var(--shadow-red);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(227, 30, 36, 0.5);
+        }
+
+        /* ─── Flash Sale Bar ─── */
+        .flash-sale-bar {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-card);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(227, 30, 36, 0.3);
+            margin-bottom: 2rem;
+        }
+        .flash-sale-bar .flash-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--red-glow);
+        }
+        .flash-sale-bar .flash-title i {
+            font-size: 1.4rem;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .countdown {
+            display: flex;
+            gap: 0.5rem;
+            font-family: 'Archivo Black', sans-serif;
+        }
+        .countdown .time-block {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.8rem;
+            text-align: center;
+            min-width: 50px;
+            border: 1px solid var(--border-subtle);
+        }
+        .countdown .time-block .num {
+            font-size: 1.8rem;
+            line-height: 1.2;
+            color: #fff;
+        }
+        .countdown .time-block .label {
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ─── Section Headers ─── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 3rem 0 1.8rem;
+        }
+        .section-header h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.8rem;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .section-header h2 i {
+            color: var(--red-cinema);
+            margin-right: 12px;
+        }
+        .section-header .view-all {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            font-size: 0.9rem;
+        }
+        .section-header .view-all:hover {
+            color: var(--red-glow);
+        }
+
+        /* ─── Offer Cards ─── */
+        .offer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .offer-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+        .offer-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--red-cinema);
+            box-shadow: var(--shadow-red);
+        }
+        .offer-card .poster {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+        .offer-card .card-body {
+            padding: 1.2rem 1.5rem 1.8rem;
+        }
+        .offer-card .card-body h3 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        .offer-card .card-body .meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+        .offer-card .price-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+        .offer-card .price-row .old-price {
+            color: var(--text-muted);
+            text-decoration: line-through;
+            font-size: 0.9rem;
+        }
+        .offer-card .price-row .new-price {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.6rem;
+            color: var(--red-glow);
+        }
+        .offer-card .price-row .discount-badge {
+            background: var(--red-cinema);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: var(--radius-full);
+            margin-left: auto;
+        }
+        .claim-btn {
+            width: 100%;
+            background: linear-gradient(95deg, var(--red-cinema), #b01016);
+            border: none;
+            padding: 10px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--shadow-red);
+        }
+        .claim-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(227, 30, 36, 0.5);
+        }
+
+        /* ─── Combo Cards ─── */
+        .combo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .combo-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-card);
+            padding: 1.8rem 1.8rem 2rem;
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .combo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red-cinema), #b01016);
+        }
+        .combo-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--red-cinema);
+            box-shadow: var(--shadow-red);
+        }
+        .combo-card .combo-icon {
+            font-size: 3rem;
+            color: var(--red-cinema);
+            margin-bottom: 0.5rem;
+        }
+        .combo-card h3 {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .combo-card .combo-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .combo-card .combo-price {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.8rem;
+            color: var(--red-glow);
+        }
+        .combo-card .combo-price small {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            margin-left: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ─── Modal / Claim Popup ─── */
+        .claim-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(16px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .claim-modal.open {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .claim-modal-content {
+            background: var(--surface-glass);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-card);
+            max-width: 480px;
+            width: 100%;
+            padding: 2.5rem 2rem 2rem;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-heavy);
+            text-align: center;
+            position: relative;
+        }
+        .claim-modal-content .close-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .claim-modal-content .close-modal:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+        .claim-modal-content .success-icon {
+            font-size: 4rem;
+            color: #2ecc71;
+            margin-bottom: 0.5rem;
+        }
+        .claim-modal-content h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 0.2rem;
+        }
+        .claim-modal-content .offer-name {
+            color: var(--red-glow);
+            font-weight: 700;
+        }
+        .claim-modal-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0.5rem 0 1.2rem;
+        }
+        .claim-code-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px dashed var(--red-cinema);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0 1.5rem;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            color: #fff;
+            position: relative;
+            user-select: all;
+        }
+        .claim-code-box .code-label {
+            font-size: 0.6rem;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 6px 18px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+        .copy-btn:hover {
+            background: var(--red-cinema);
+            color: #fff;
+            border-color: var(--red-cinema);
+        }
+        .modal-footer {
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            background: rgba(7, 10, 18, 0.9);
+            backdrop-filter: blur(12px);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3.5rem;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* ─── Toast ─── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--red-cinema);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.success {
+            background: #2e7d32;
+        }
+        .toast.error {
+            background: #c62828;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 850px) {
+            .top-navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.8rem 1.5rem;
+            }
+            .nav-links-top {
+                justify-content: center;
+                gap: 1.2rem;
+            }
+            .hero-banner {
+                padding: 2.5rem 1.5rem;
+            }
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .flash-sale-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .countdown .time-block {
+                min-width: 40px;
+            }
+            .countdown .time-block .num {
+                font-size: 1.4rem;
+            }
+            .claim-modal-content {
+                padding: 2rem 1.2rem;
+            }
+            .claim-code-box {
+                font-size: 1.4rem;
+                padding: 0.8rem;
+            }
+        }
+        @media (max-width: 500px) {
+            .offer-grid,
+            .combo-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+            .hero-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .section-header h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── Background ─── -->
+    <div class="cinema-backdrop"></div>
+    <div class="light-bleed"></div>
+
+    <!-- ─── Top Navbar ─── -->
+    <nav class="top-navbar">
+        <a href="Home.html" class="logo">
+            <img src="image/logo.png" alt="CNIMA Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <h2 style="display:none;">LEGEND<span>CINEMA</span></h2>
+        </a>
+        <div class="nav-links-top">
+            <a href="Home.html">Home</a>
+            <a href="Movie.html">Movies</a>
+            <a href="Offer.html" class="active">Offers</a>
+            <a href="Profile.html">Profile</a>
+            <a href="Setting.html">Settings</a>
+        </div>
+        <div class="user-area" id="userArea">
+            <i class="fas fa-user-circle"></i>
+            <span id="username">Visal</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+        </div>
+    </nav>
+
+    <!-- ─── Main Content ─── -->
+    <main class="container">
+
+        <!-- Hero -->
+        <section class="hero-banner">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="fas fa-bolt"></i> Limited Time</span>
+                <h1>Epic <span>Summer</span> Deals</h1>
+                <p>Get up to <strong style="color: var(--red-glow);">40% off</strong> on premium seats + exclusive combo offers. Don't miss out!</p>
+                <button class="hero-btn" onclick="document.querySelector('.offer-grid').scrollIntoView({behavior:'smooth'});">
+                    <i class="fas fa-ticket-alt"></i> Explore Offers
+                </button>
+            </div>
+        </section>
+
+        <!-- Flash Sale Countdown -->
+        <div class="flash-sale-bar">
+            <div class="flash-title">
+                <i class="fas fa-clock"></i>
+                <span>🔥 FLASH SALE ENDS IN</span>
+            </div>
+            <div class="countdown" id="countdownTimer">
+                <div class="time-block"><span class="num" id="hours">02</span><span class="label">Hours</span></div>
+                <div class="time-block"><span class="num" id="minutes">45</span><span class="label">Mins</span></div>
+                <div class="time-block"><span class="num" id="seconds">30</span><span class="label">Secs</span></div>
+            </div>
+        </div>
+
+        <!-- Movie Discounts -->
+        <div class="section-header">
+            <h2><i class="fas fa-tags"></i> Movie Discounts</h2>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="offer-grid" id="movieOfferGrid">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- Combo Offers -->
+        <div class="section-header" style="margin-top: 3.5rem;">
+            <h2><i class="fas fa-utensils"></i> Combo Deals</h2>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="combo-grid" id="comboGrid">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- BOGO & Member Exclusive (new section) -->
+        <div class="section-header" style="margin-top: 3.5rem;">
+            <h2><i class="fas fa-star"></i> Member Exclusives</h2>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="offer-grid" id="memberOfferGrid">
+            <!-- Injected by JS -->
+        </div>
+
+    </main>
+
+    <!-- ─── Footer ─── -->
+    <footer>
+        <p>© 2026 LEGEND CINEMA — Premium Cinema Experience</p>
+    </footer>
+
+    <!-- ─── Claim Modal ─── -->
+    <div class="claim-modal" id="claimModal">
+        <div class="claim-modal-content">
+            <button class="close-modal" onclick="closeClaimModal()"><i class="fas fa-times"></i></button>
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>🎉 Offer Claimed!</h2>
+            <p>Your promo code for <span class="offer-name" id="claimedOfferName"></span></p>
+            <div class="claim-code-box">
+                <span class="code-label">✨ YOUR UNIQUE CODE</span>
+                <span id="claimCodeDisplay">CODE123</span>
+                <button class="copy-btn" onclick="copyClaimCode()"><i class="fas fa-copy"></i> Copy</button>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Show this code at the box office or enter at checkout.</p>
+            <div class="modal-footer">
+                <small>Offer valid for 48 hours. One-time use only.</small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ─── Data with fresh images ───
+        const movieOffers = [{
+            id: 1,
+            title: 'Dune: Part Two',
+            genre: 'Sci-Fi / Adventure',
+            poster: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 12.00,
+            newPrice: 8.40,
+            discount: 30
+        }, {
+            id: 2,
+            title: 'Godzilla x Kong',
+            genre: 'Action / Sci-Fi',
+            poster: 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 14.00,
+            newPrice: 9.80,
+            discount: 30
+        }, {
+            id: 3,
+            title: 'Furiosa: A Mad Max Saga',
+            genre: 'Action / Adventure',
+            poster: 'https://images.unsplash.com/photo-1534809027769-b00d750a6bac?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 11.00,
+            newPrice: 7.70,
+            discount: 30
+        }, {
+            id: 4,
+            title: 'Inside Out 2',
+            genre: 'Animation / Family',
+            poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 10.00,
+            newPrice: 6.50,
+            discount: 35
+        }, {
+            id: 5,
+            title: 'Deadpool & Wolverine',
+            genre: 'Action / Comedy',
+            poster: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 13.00,
+            newPrice: 9.10,
+            discount: 30
+        }, {
+            id: 6,
+            title: 'Alien: Romulus',
+            genre: 'Horror / Sci-Fi',
+            poster: 'https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 12.00,
+            newPrice: 8.40,
+            discount: 30
+        }];
+
+        const combos = [{
+            id: 1,
+            title: 'Duo Delight',
+            desc: '2 Premium Tickets + 1 Large Popcorn + 2 Large Drinks',
+            price: 25.00,
+            originalPrice: 35.00,
+            icon: 'fa-ticket-alt'
+        }, {
+            id: 2,
+            title: 'Family Pack',
+            desc: '4 Tickets + 2 Popcorns + 4 Drinks + 1 Candy',
+            price: 45.00,
+            originalPrice: 62.00,
+            icon: 'fa-users'
+        }, {
+            id: 3,
+            title: 'Date Night',
+            desc: '2 VIP Seats + 1 Charcuterie Board + 2 Cocktails',
+            price: 38.00,
+            originalPrice: 52.00,
+            icon: 'fa-heart'
+        }, {
+            id: 4,
+            title: 'Student Saver',
+            desc: '1 Ticket + 1 Small Drink + 1 Popcorn (ID required)',
+            price: 12.00,
+            originalPrice: 18.00,
+            icon: 'fa-graduation-cap'
+        }];
+
+        const memberOffers = [{
+            id: 7,
+            title: 'BOGO Free Ticket',
+            genre: 'Buy One Get One Free',
+            poster: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 16.00,
+            newPrice: 8.00,
+            discount: 50
+        }, {
+            id: 8,
+            title: 'Member Early Access',
+            genre: 'Exclusive Preview Screening',
+            poster: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=400&h=600&q=80',
+            oldPrice: 0,
+            newPrice: 0,
+            discount: 100,
+            free: true
+        }];
+
+        // ─── Render Functions ───
+        function renderMovieOffers() {
+            const container = document.getElementById('movieOfferGrid');
+            container.innerHTML = movieOffers.map(m => `
+                    <div class="offer-card">
+                        <img src="${m.poster}" alt="${m.title}" class="poster" />
+                        <div class="card-body">
+                            <h3>${m.title}</h3>
+                            <div class="meta">${m.genre}</div>
+                            <div class="price-row">
+                                <span class="old-price">$${m.oldPrice.toFixed(2)}</span>
+                                <span class="new-price">$${m.newPrice.toFixed(2)}</span>
+                                <span class="discount-badge">-${m.discount}%</span>
+                            </div>
+                            <button class="claim-btn" onclick="claimOffer('${m.title}', '$${m.newPrice.toFixed(2)}')">
+                                <i class="fas fa-gift"></i> Claim Offer
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function renderCombos() {
+            const container = document.getElementById('comboGrid');
+            container.innerHTML = combos.map(c => `
+                    <div class="combo-card">
+                        <div class="combo-icon"><i class="fas ${c.icon}"></i></div>
+                        <h3>${c.title}</h3>
+                        <p class="combo-desc">${c.desc}</p>
+                        <div class="combo-price">
+                            $${c.price.toFixed(2)}
+                            <small>$${c.originalPrice.toFixed(2)}</small>
+                        </div>
+                        <br />
+                        <button class="claim-btn" onclick="claimOffer('${c.title} Combo', '$${c.price.toFixed(2)}')" style="width:100%;">
+                            <i class="fas fa-shopping-cart"></i> Get Combo
+                        </button>
+                    </div>
+                `).join('');
+        }
+
+        function renderMemberOffers() {
+            const container = document.getElementById('memberOfferGrid');
+            container.innerHTML = memberOffers.map(m => `
+                    <div class="offer-card">
+                        <img src="${m.poster}" alt="${m.title}" class="poster" />
+                        <div class="card-body">
+                            <h3>${m.title}</h3>
+                            <div class="meta">${m.genre}</div>
+                            <div class="price-row">
+                                ${m.free ? '<span class="new-price" style="color:#2ecc71;">FREE</span>' : `
+                                    <span class="old-price">$${m.oldPrice.toFixed(2)}</span>
+                                    <span class="new-price">$${m.newPrice.toFixed(2)}</span>
+                                    <span class="discount-badge">-${m.discount}%</span>
+                                `}
+                            </div>
+                            <button class="claim-btn" onclick="claimOffer('${m.title}', '${m.free ? 'FREE' : '$'+m.newPrice.toFixed(2)}')">
+                                <i class="fas fa-crown"></i> Claim Exclusive
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // ─── Claim System ───
+        let currentClaimCode = '';
+
+        function claimOffer(name, price) {
+            // Generate a random code: e.g., "CNM-7X9K-2P4L"
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'CNM-';
+            for (let i = 0; i < 3; i++) {
+                let segment = '';
+                for (let j = 0; j < 4; j++) {
+                    segment += chars[Math.floor(Math.random() * chars.length)];
+                }
+                code += segment + (i < 2 ? '-' : '');
+            }
+            currentClaimCode = code;
+
+            // Populate modal
+            document.getElementById('claimedOfferName').textContent = `${name} (${price})`;
+            document.getElementById('claimCodeDisplay').textContent = code;
+
+            // Show modal
+            document.getElementById('claimModal').classList.add('open');
+
+            // Also show toast
+            showToast(`🎫 Offer claimed! Check your code.`, 'success');
+        }
+
+        function closeClaimModal() {
+            document.getElementById('claimModal').classList.remove('open');
+        }
+
+        function copyClaimCode() {
+            const code = document.getElementById('claimCodeDisplay').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('📋 Code copied to clipboard!', 'success');
+            }).catch(() => {
+                // fallback
+                const range = document.createRange();
+                const el = document.getElementById('claimCodeDisplay');
+                range.selectNode(el);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                showToast('📋 Code copied!', 'success');
+            });
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('claimModal').addEventListener('click', function(e) {
+            if (e.target === this) closeClaimModal();
+        });
+
+        // ─── Toast System ───
+        function showToast(message, type = 'success') {
+            const old = document.querySelector('.toast');
+            if (old) old.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // ─── Countdown Timer ───
+        function startCountdown() {
+            const endTime = new Date().getTime() + 2 * 60 * 60 * 1000;
+            function updateTimer() {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+                if (distance < 0) {
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    return;
+                }
+                const hours = Math.floor((distance % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                const minutes = Math.floor((distance % (60 * 60 * 1000)) / (60 * 1000));
+                const seconds = Math.floor((distance % (60 * 1000)) / 1000);
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // ─── User Area Redirect ───
+        document.getElementById('userArea').addEventListener('click', () => {
+            window.location.href = 'Profile.html';
+        });
+
+        // ─── Init ───
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMovieOffers();
+            renderCombos();
+            renderMemberOffers();
+            startCountdown();
+
+            // Load username from localStorage
+            const profileRaw = localStorage.getItem('legend_profile_data');
+            if (profileRaw) {
+                try {
+                    const profile = JSON.parse(profileRaw);
+                    if (profile.fullName) {
+                        document.getElementById('username').textContent = profile.fullName.split(' ')[0];
+                    }
+                } catch (_) { /* ignore */ }
+            }
+        });
+
+        // Expose globals for inline onclick
+        window.claimOffer = claimOffer;
+        window.closeClaimModal = closeClaimModal;
+        window.copyClaimCode = copyClaimCode;
+        window.showToast = showToast;
+    </script>
+
+</body>
+</html>

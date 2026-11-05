@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>LEGEND CINEMA | Register</title>
+    <!-- Premium fonts: Inter for UI, Archivo Black for bold cinematic brand -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Archivo+Black&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #07090c;
+            --surface-glass: rgba(18, 22, 28, 0.75);
+            --surface-elevated: rgba(22, 26, 32, 0.9);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(255, 255, 255, 0.18);
+            --red-cinema: #E31E24;
+            --red-glow: #ff4d52;
+            --text-primary: #F0F2F5;
+            --text-secondary: #9aa0b0;
+            --text-muted: #5f6673;
+            --shadow-red: 0 8px 24px rgba(227, 30, 36, 0.25);
+            --transition-smooth: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body {
+            background: var(--bg-deep);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 1.5rem;
+        }
+
+        /* Dynamic cinematic background with subtle motion */
+        .cinema-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 30%, #1a1e2b 0%, #030405 90%);
+        }
+
+        .light-bleed {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .light-bleed::before {
+            content: "";
+            position: absolute;
+            width: 80vw;
+            height: 70vw;
+            background: radial-gradient(circle at 30% 40%, rgba(227, 30, 36, 0.12) 0%, transparent 70%);
+            top: -15%;
+            left: -10%;
+            filter: blur(90px);
+            animation: slowDrift 18s infinite alternate ease-in-out;
+        }
+
+        .light-bleed::after {
+            content: "";
+            position: absolute;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle at 70% 70%, rgba(30, 100, 220, 0.1) 0%, transparent 70%);
+            bottom: -20%;
+            right: -10%;
+            filter: blur(100px);
+            animation: slowDrift 22s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes slowDrift {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(4%, 3%) scale(1.1);
+            }
+        }
+
+        /* ─── Main Register Card ─── */
+        .register-masterpiece {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            background: var(--surface-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2.5rem;
+            overflow: hidden;
+            box-shadow: 0 30px 55px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: var(--transition-smooth);
+        }
+
+        /* Left side: evocative cinema image with gradient overlay */
+        .visual-side {
+            flex: 1.1;
+            position: relative;
+            min-height: 580px;
+            background: #0b0d12;
+        }
+
+        .visual-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .visual-side:hover img {
+            transform: scale(1.02);
+        }
+
+        .visual-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7, 9, 12, 0.3) 0%, rgba(7, 9, 12, 0.7) 90%);
+            backdrop-filter: saturate(0.8);
+        }
+
+        .cinema-quote {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 2.5rem;
+            color: white;
+            font-weight: 500;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+            text-shadow: 0 4px 12px black;
+            border-left: 4px solid var(--red-cinema);
+            padding-left: 1.2rem;
+            line-height: 1.5;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(6px);
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* ─── Right panel ─── */
+        .form-side {
+            flex: 1;
+            padding: 2.8rem 3rem 2.8rem 3.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(14, 17, 22, 0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        .brand-mini {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            margin-bottom: 1.6rem;
+            color: white;
+            line-height: 1;
+        }
+
+        .brand-mini span {
+            color: var(--red-cinema);
+            font-weight: 800;
+        }
+
+        .welcome-text {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            letter-spacing: -0.3px;
+        }
+
+        .sub-greeting {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            border-left: 3px solid var(--red-cinema);
+            padding-left: 1rem;
+        }
+
+        /* ─── Role Segment ─── */
+        .role-segment {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 3rem;
+            padding: 0.35rem;
+            margin-bottom: 1.8rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .role-option {
+            flex: 1;
+            text-align: center;
+            padding: 0.8rem 0.5rem;
+            border-radius: 2.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .role-option i {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .role-option.active {
+            background: linear-gradient(105deg, #d71e26, #e63238);
+            color: white;
+            box-shadow: var(--shadow-red);
+            font-weight: 700;
+        }
+
+        /* ─── Form fields ─── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem 1.2rem;
+        }
+
+        .input-field {
+            margin-bottom: 1rem;
+        }
+
+        .input-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .input-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(10, 12, 16, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.9rem;
+            padding: 0.75rem 1.1rem;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(6px);
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--red-cinema);
+            box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.2);
+            background: rgba(20, 22, 28, 0.8);
+        }
+
+        .input-wrapper i {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            width: 18px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0 0.4rem;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        /* ─── Admin hint ─── */
+        .admin-context {
+            background: rgba(227, 30, 36, 0.08);
+            border: 1px dashed rgba(227, 30, 36, 0.4);
+            border-radius: 0.9rem;
+            padding: 0.7rem 1.2rem;
+            font-size: 0.78rem;
+            color: #ffb3b5;
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            grid-column: 1 / -1;
+        }
+
+        /* ─── Terms & actions ─── */
+        .terms-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin: 0.2rem 0 1.2rem 0;
+            grid-column: 1 / -1;
+        }
+
+        .terms-row input[type="checkbox"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: rgba(10, 12, 16, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .terms-row input[type="checkbox"]:checked {
+            background: var(--red-cinema);
+            border-color: var(--red-cinema);
+        }
+
+        .terms-row input[type="checkbox"]:checked::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.7rem;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .terms-row label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .terms-row label a {
+            color: var(--red-glow);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition-smooth);
+        }
+
+        .terms-row label a:hover {
+            border-bottom: 1px solid var(--red-cinema);
+        }
+
+        .btn-continue {
+            width: 100%;
+            background: linear-gradient(115deg, #c41921, #e6323a);
+            border: none;
+            padding: 1rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 20px -8px rgba(227, 30, 36, 0.45);
+            margin-top: 0.2rem;
+            grid-column: 1 / -1;
+        }
+
+        .btn-continue:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 18px 28px -8px rgba(227, 30, 36, 0.6);
+        }
+
+        .btn-continue:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            filter: none;
+        }
+
+        .login-redirect {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+
+        .login-redirect a {
+            color: var(--red-glow);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: var(--transition-smooth);
+        }
+
+        .login-redirect a:hover {
+            border-bottom: 1px solid var(--red-cinema);
+        }
+
+        .error-flash {
+            background: rgba(227, 30, 36, 0.15);
+            border-left: 4px solid var(--red-cinema);
+            padding: 0.7rem 1.2rem;
+            border-radius: 0.6rem;
+            font-size: 0.8rem;
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            backdrop-filter: blur(10px);
+            grid-column: 1 / -1;
+            margin-top: 0.2rem;
+        }
+
+        .success-flash {
+            background: rgba(46, 204, 113, 0.15);
+            border-left: 4px solid #2ecc71;
+            padding: 0.7rem 1.2rem;
+            border-radius: 0.6rem;
+            font-size: 0.8rem;
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            backdrop-filter: blur(10px);
+            grid-column: 1 / -1;
+            margin-top: 0.2rem;
+            color: #a8e6cf;
+        }
+
+        /* ─── Loading shroud ─── */
+        .loading-shroud {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 3, 6, 0.96);
+            backdrop-filter: blur(18px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-ring {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(227, 30, 36, 0.25);
+            border-top: 3px solid var(--red-cinema);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 850px) {
+            .register-masterpiece {
+                flex-direction: column;
+                border-radius: 2rem;
+            }
+            .visual-side {
+                min-height: 200px;
+            }
+            .form-side {
+                padding: 2rem 1.8rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0.4rem;
+            }
+            .input-field.full-width {
+                grid-column: 1;
+            }
+            .admin-context {
+                grid-column: 1;
+            }
+            .terms-row {
+                grid-column: 1;
+            }
+            .btn-continue {
+                grid-column: 1;
+            }
+            .login-redirect {
+                grid-column: 1;
+            }
+            .error-flash {
+                grid-column: 1;
+            }
+            .success-flash {
+                grid-column: 1;
+            }
+            .brand-mini {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .welcome-text {
+                font-size: 1.4rem;
+            }
+            .role-segment {
+                margin-bottom: 1.2rem;
+            }
+            .cinema-quote {
+                bottom: 1.2rem;
+                left: 1.2rem;
+                font-size: 0.85rem;
+                padding-left: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-side {
+                padding: 1.5rem 1.2rem;
+            }
+            .role-option {
+                font-size: 0.75rem;
+                padding: 0.6rem 0.3rem;
+            }
+            .input-wrapper {
+                padding: 0.6rem 0.9rem;
+            }
+            .input-wrapper input {
+                font-size: 0.85rem;
+            }
+            .btn-continue {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cinema-backdrop"></div>
+    <div class="light-bleed"></div>
+
+    <!-- ─── Loading Shroud ─── -->
+    <div id="loadingShroud" class="loading-shroud">
+        <div class="loader-ring"></div>
+        <div style="font-family: 'Archivo Black', sans-serif; font-size: 1.6rem; letter-spacing: 2px;">
+            LEGEND <span style="color:#E31E24;">CINEMA</span>
+        </div>
+        <div style="margin-top: 0.8rem; color: #9aa0b0; font-size: 0.8rem; letter-spacing: 1px;">
+            CREATING YOUR ACCOUNT
+        </div>
+    </div>
+
+    <!-- ─── Main Register Card ─── -->
+    <main class="register-masterpiece">
+
+        <!-- Left: cinematic image -->
+        <div class="visual-side">
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80" alt="Cinema auditorium with dramatic lighting">
+            <div class="visual-overlay"></div>
+            <div class="cinema-quote">
+                "Every story begins<br>with a single step."
+            </div>
+        </div>
+
+        <!-- Right: registration form -->
+        <div class="form-side">
+    <img src="./image/logo.png" 
+         alt="LEGEND CINEMA" 
+         style="width: 200px; height: auto; object-fit: contain; margin-bottom: 0.5rem;">
+            <div class="welcome-text">Join the legend</div>
+            <div class="sub-greeting">Create your account and start your journey</div>
+
+            <!-- Role switcher -->
+            <div class="role-segment" id="roleSelector">
+                <div class="role-option active" data-role="user" id="roleUserBtn">
+                    <i class="fas fa-film"></i> Movie Fan
+                </div>
+                <div class="role-option" data-role="admin" id="roleAdminBtn">
+                    <i class="fas fa-clapperboard"></i> Admin
+                </div>
+            </div>
+
+            <form id="registerForm" autocomplete="off" style="display: flex; flex-direction: column;">
+                <div class="form-grid">
+
+                    <!-- Full Name -->
+                    <div class="input-field full-width">
+                        <span class="input-label">Full Name</span>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="fullnameInput" placeholder="Your full name" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="input-field full-width">
+                        <span class="input-label">Username</span>
+                        <div class="input-wrapper">
+                            <i class="fas fa-at"></i>
+                            <input type="text" id="usernameInput" placeholder="Choose a username" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="input-field full-width">
+                        <span class="input-label">Email</span>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="input-field full-width">
+                        <span class="input-label">Password</span>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="passwordInput" placeholder="Create a strong password">
+                            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="input-field full-width">
+                        <span class="input-label">Confirm Password</span>
+                        <div class="input-wrapper">
+                            <i class="fas fa-shield-alt"></i>
+                            <input type="password" id="confirmPasswordInput" placeholder="Confirm your password">
+                            <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+                        </div>
+                    </div>
+
+                    <!-- Admin hint -->
+                    <div id="adminHint" class="admin-context">
+                        <i class="fas fa-shield-haltered"></i> Admin registration: additional privileges granted upon approval.
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="terms-row">
+                        <input type="checkbox" id="termsCheckbox">
+                        <label for="termsCheckbox">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn-continue" id="registerButton">
+                        <span>Create Account</span> <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <!-- Error & Success messages -->
+                    <div id="errorMessage" class="error-flash">
+                        <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+                    </div>
+                    <div id="successMessage" class="success-flash">
+                        <i class="fas fa-check-circle"></i> <span id="successText"></span>
+                    </div>
+
+                    <!-- Redirect to login -->
+                    <div class="login-redirect">
+                        Already have an account? <a href="Login.html">Sign in</a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            // ─── DOM refs ───
+            const roleUserBtn = document.getElementById('roleUserBtn');
+            const roleAdminBtn = document.getElementById('roleAdminBtn');
+            const fullnameField = document.getElementById('fullnameInput');
+            const usernameField = document.getElementById('usernameInput');
+            const emailField = document.getElementById('emailInput');
+            const passwordField = document.getElementById('passwordInput');
+            const confirmField = document.getElementById('confirmPasswordInput');
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleConfirm = document.getElementById('toggleConfirmPassword');
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            const registerBtn = document.getElementById('registerButton');
+            const adminHint = document.getElementById('adminHint');
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            const loadingShroud = document.getElementById('loadingShroud');
+
+            let currentRole = 'user';
+
+            // ─── Helpers ───
+            function hideError() {
+                errorDiv.style.display = 'none';
+            }
+
+            function showError(msg) {
+                errorText.textContent = msg;
+                errorDiv.style.display = 'flex';
+                successDiv.style.display = 'none';
+            }
+
+            function showSuccess(msg) {
+                successText.textContent = msg;
+                successDiv.style.display = 'flex';
+                errorDiv.style.display = 'none';
+            }
+
+            function hideAllMessages() {
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+            }
+
+            // ─── Role switch ───
+            function setRole(role) {
+                currentRole = role;
+                if (role === 'admin') {
+                    roleAdminBtn.classList.add('active');
+                    roleUserBtn.classList.remove('active');
+                    adminHint.style.display = 'flex';
+                } else {
+                    roleUserBtn.classList.add('active');
+                    roleAdminBtn.classList.remove('active');
+                    adminHint.style.display = 'none';
+                }
+                hideAllMessages();
+            }
+
+            roleUserBtn.addEventListener('click', () => setRole('user'));
+            roleAdminBtn.addEventListener('click', () => setRole('admin'));
+
+            // ─── Toggle password visibility ───
+            togglePassword.addEventListener('click', () => {
+                const isPassword = passwordField.type === 'password';
+                passwordField.type = isPassword ? 'text' : 'password';
+                togglePassword.classList.toggle('fa-eye');
+                togglePassword.classList.toggle('fa-eye-slash');
+            });
+
+            toggleConfirm.addEventListener('click', () => {
+                const isPassword = confirmField.type === 'password';
+                confirmField.type = isPassword ? 'text' : 'password';
+                toggleConfirm.classList.toggle('fa-eye');
+                toggleConfirm.classList.toggle('fa-eye-slash');
+            });
+
+            // ─── Clear errors on focus ───
+            [fullnameField, usernameField, emailField, passwordField, confirmField].forEach(field => {
+                field.addEventListener('focus', hideAllMessages);
+            });
+
+            // ─── Submit handler ───
+            function handleRegister(e) {
+                e.preventDefault();
+                hideAllMessages();
+
+                const fullname = fullnameField.value.trim();
+                const username = usernameField.value.trim();
+                const email = emailField.value.trim();
+                const password = passwordField.value;
+                const confirm = confirmField.value;
+
+                // Validation
+                if (!fullname) {
+                    showError('Please enter your full name.');
+                    return;
+                }
+                if (!username) {
+                    showError('Please choose a username.');
+                    return;
+                }
+                if (username.length < 3) {
+                    showError('Username must be at least 3 characters.');
+                    return;
+                }
+                if (!email) {
+                    showError('Please enter your email address.');
+                    return;
+                }
+                if (!email.includes('@') || !email.includes('.')) {
+                    showError('Please enter a valid email address.');
+                    return;
+                }
+                if (!password) {
+                    showError('Please create a password.');
+                    return;
+                }
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters.');
+                    return;
+                }
+                if (password !== confirm) {
+                    showError('Passwords do not match.');
+                    return;
+                }
+                if (!termsCheckbox.checked) {
+                    showError('You must agree to the Terms of Service and Privacy Policy.');
+                    return;
+                }
+
+                // ─── Simulate registration ───
+                registerBtn.disabled = true;
+                loadingShroud.style.display = 'flex';
+
+                setTimeout(() => {
+                    // Store minimal session info
+                    const sessionData = {
+                        registered: true,
+                        role: currentRole,
+                        username: username,
+                        email: email,
+                        fullname: fullname,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem('legend_cinema_registration', JSON.stringify(sessionData));
+
+                    loadingShroud.style.display = 'none';
+                    registerBtn.disabled = false;
+
+                    showSuccess('Account created successfully! Redirecting to login...');
+
+                    // Redirect to login after a moment
+                    setTimeout(() => {
+                        window.location.href = 'Login.html';
+                    }, 1800);
+
+                }, 1600);
+            }
+
+            registerBtn.addEventListener('click', handleRegister);
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+
+            // ─── Init ───
+            setRole('user');
+            loadingShroud.style.display = 'none';
+
+            // Prefill demo hint for quick testing (optional)
+            // fullnameField.value = 'Demo User';
+            // usernameField.value = 'demouser';
+            // emailField.value = 'demo@legend.com';
+            // passwordField.value = 'demo123';
+            // confirmField.value = 'demo123';
+            // termsCheckbox.checked = true;
+
+        })();
+    </script>
+
+</body>
+</html>
